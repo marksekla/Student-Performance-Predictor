@@ -60,32 +60,19 @@ This project is a web application that predicts student performance using a mach
 ```
 
 ## Recreating the Python Virtual Environment
-Follow these steps to set up the Python virtual environment for the backend:
 
-Prerequisites
-Python: Ensure Python 3.8 or higher is installed.
-Pip: Verify pip is installed.
+To set up the Python virtual environment for the backend, follow these steps:
 
-**Steps**:
-1. Create the Virtual Environment:
+1. Ensure Python 3.8 or higher is installed by checking your version with `python --version`. Verify that `pip` is installed by running `pip --version`.
 
-python -m venv venv
+2. Create a virtual environment by running `python -m venv venv`.
 
-2. Activate the Virtual Environment:
-Linux/Mac:
+3. Activate the virtual environment:
+   - On Linux/Mac: `source venv/bin/activate`
+   - On Windows: `.\venv\Scripts\activate`
 
-source venv/bin/activate
+4. Install project dependencies with `pip install -r requirements.txt`.
 
-Windows:
-.\venv\Scripts\activate
+5. Run the backend application using `python backend/app.py`.
 
-3. Install Dependencies:
-pip install -r requirements.txt
-
-4.Run the Backend:
-python backend/app.py
-
-5. Deactivating the Virtual Environment
-To deactivate the virtual environment, run:
-
-deactivate
+6. When you're done, deactivate the virtual environment by running `deactivate`.
