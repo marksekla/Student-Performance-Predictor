@@ -68,10 +68,12 @@ Pip: Verify pip is installed.
 
 **Steps**:
 1. Create the Virtual Environment:
+
 python -m venv venv
 
 2. Activate the Virtual Environment:
 Linux/Mac:
+
 source venv/bin/activate
 
 Windows:
