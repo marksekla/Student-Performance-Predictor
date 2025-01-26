@@ -1,0 +1,31 @@
+ 
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+
+# Serialized models and intermediate files
+backend/models/*.pkl
+
+# Dataset files
+data/*.csv
+data/*.xlsx
+data/*.json
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+
+
+# Build output for frontend
+frontend/build/
+frontend/dist/
+
+# IDE specific files
+.vscode/
+.idea/
+
+# System files
+Thumbs.db
