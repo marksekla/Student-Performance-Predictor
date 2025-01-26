@@ -18,6 +18,8 @@ data/*.json
 __pycache__/
 *.pyc
 
+# Virtual environment files
+venv/
 
 # Build output for frontend
 frontend/build/
