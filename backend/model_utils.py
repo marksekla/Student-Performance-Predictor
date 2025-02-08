@@ -27,19 +27,20 @@ class BinaryEncoder(BaseEstimator, TransformerMixin):
             X_copy[feature] = X_copy[feature].map(mapping)
         return X_copy
 
+
 # Create the pipeline
-def create_model_pipeline(numerical_features, binary_features, multi_cat_features):
+def create_model_pipeline(binary_features, multi_cat_features, numerical_features):
     # Create transformers
+    binary_cat_transformer = BinaryEncoder(binary_features)
+    multi_cat_transformer = OneHotEncoder(drop='first', sparse_output=False)
     numeric_transformer = MinMaxScaler()
-    binary_transformer = BinaryEncoder(binary_features)
-    categorical_transformer = OneHotEncoder(drop='first', sparse_output=False)
 
     # Create column transformer
     preprocessor = ColumnTransformer(
         transformers=[
-            ('num', numeric_transformer, numerical_features),
-            ('bin', binary_transformer, binary_features),
-            ('cat', categorical_transformer, multi_cat_features)
+            ('bin', binary_cat_transformer, binary_features),
+            ('cat', multi_cat_transformer, multi_cat_features),
+            ('num', numeric_transformer, numerical_features)
         ])
 
     # Create pipeline
