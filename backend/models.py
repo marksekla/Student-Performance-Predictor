@@ -2,7 +2,7 @@ import os
 import pickle
 import sys
 
-# MOVED TO app.py (changed name to scripts_path)
+# # MOVED TO app.py (changed name to scripts_path)
 # backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts'))
 # sys.path.append(backend_path)
 

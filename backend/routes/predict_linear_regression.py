@@ -65,13 +65,16 @@ def predict_linear_regression():
         })
         
         # Make prediction
-        prediction = linear_regression_pipeline.predict(input_data)
-        
+        prediction = linear_regression_pipeline.predict(input_data)[0]  # Get first (and only) prediction
+        capped_prediction = min(100, max(0, prediction))  # Cap between 0 and 100
+        rounded_prediction = round(float(capped_prediction), 2)  # Convert to float and round to 2 decimal places
+                
         return jsonify({
             'success': True,
-            'prediction': float(prediction[0]),
+            'prediction': rounded_prediction,
             'message': 'Prediction successful'
         })
+
 
     except Exception as e:
         return jsonify({
