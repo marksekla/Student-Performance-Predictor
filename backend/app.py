@@ -15,9 +15,9 @@ scripts_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'sc
 sys.path.append(scripts_path)
 
 
-# "Python can find and import from the 'routes' directory because it's a subdirectory of where app.py is located.
+# Python can find and import from the 'routes' directory because it's a subdirectory of where app.py is located.
 # When Python sees `from routes import <whatever>`, it first looks in the same directory as the importing file (app.py), which is the backend/ directory.
-# Finding routes/ there, it doesn't need to search through sys.path."
+# Finding routes/ there, it doesn't need to search through sys.path.
 from routes.predict_linear_regression import predict_linear_regression_bp
 from routes.predict_random_forest import predict_random_forest_bp
 from routes.health import health_bp

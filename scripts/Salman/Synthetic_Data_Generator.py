@@ -9,16 +9,27 @@ def normalize(x, min_val=0, max_val=100):
 def generate_exam_score(features, categorical_features):
     """
     Generate realistic exam score based on both numerical and categorical features.
-    Relationships derived from original dataset analysis.
+    Weights based on actual point differences from original dataset.
     """
-    # Weights for numerical features (based on observations from original dataset)
+
+    """
+    Attendance: 5.81
+    Hours_Studied: 4.22
+    Previous_Scores: 1.80
+    Tutoring_Sessions: 1.03
+    Physical_Activity: 0.23
+    Sleep_Hours: -0.09
+    ------------------------
+    Total: 13.00 points
+    """
+    # Weights for numerical features (sum to 1)
     weights = {
-        'hours_studied': 0.35,
-        'attendance': 0.25,
-        'previous_scores': 0.25,
-        'tutoring': 0.1,
-        'physical_activity': 0.04,
-        'sleep_hours': 0.01
+        'attendance': 0.447,      # 5.81/13.00 = 44.7%
+        'hours_studied': 0.325,   # 4.22/13.00 = 32.5%
+        'previous_scores': 0.138, # 1.80/13.00 = 13.8%
+        'tutoring': 0.079,       # 1.03/13.00 = 7.9%
+        'physical_activity': 0.018, # 0.23/13.00 = 1.8%
+        'sleep_hours': -0.007,    # -0.09/13.00 = -0.7%
     }
     
     # Calculate base score (0-1 range) from numerical features
@@ -31,45 +42,43 @@ def generate_exam_score(features, categorical_features):
         weights['sleep_hours'] * normalize(features['sleep_hours'], 0, 12)
     )
 
-    # Adjust score based on categorical features
+
+    # Adjust score based on most impactful categorical features
     score_modifier = 1.0  # Start with no modification
 
-    # Strong Impact Features
-    # Parental_Involvement (±1.73 points difference)
-    if categorical_features['Parental_Involvement'] == 'High':
-        score_modifier *= 1.025  # +1.73 points
-    elif categorical_features['Parental_Involvement'] == 'Low':
-        score_modifier *= 0.975  # -1.73 points
-
-    # Access_to_Resources (±1.89 points difference)
+    # Access_to_Resources (Medium baseline: 67.13)
     if categorical_features['Access_to_Resources'] == 'High':
-        score_modifier *= 1.028  # +1.89 points
+        score_modifier *= 1.0143  # 68.09/67.13
     elif categorical_features['Access_to_Resources'] == 'Low':
-        score_modifier *= 0.972  # -1.89 points
+        score_modifier *= 0.9862  # 66.20/67.13
 
-    # Parental_Education_Level (±1.08 points difference)
-    if categorical_features['Parental_Education_Level'] == 'Postgraduate':
-        score_modifier *= 1.016  # +1.08 points
-    elif categorical_features['Parental_Education_Level'] == 'High School':
-        score_modifier *= 0.984  # -1.08 points
+    # Parental_Involvement (Medium baseline: 67.10)
+    if categorical_features['Parental_Involvement'] == 'High':
+        score_modifier *= 1.0148  # 68.09/67.10
+    elif categorical_features['Parental_Involvement'] == 'Low':
+        score_modifier *= 0.9889  # 66.36/67.10
 
+    # Distance_from_Home (Near baseline: 67.51)
+    if categorical_features['Distance_from_Home'] == 'Moderate':
+        score_modifier *= 0.9922  # 66.98/67.51
+    elif categorical_features['Distance_from_Home'] == 'Far':
+        score_modifier *= 0.9845  # 66.46/67.51
 
-    # Moderate Impact Features
-    # Distance_from_Home (±1.05 points difference)
-    if categorical_features['Distance_from_Home'] == 'Far':
-        score_modifier *= 0.985  # -1.05 points
-    elif categorical_features['Distance_from_Home'] == 'Near':
-        score_modifier *= 1.015  # +1.05 points
-
-    # Peer_Influence (±1.06 points difference)
+    # Peer_Influence (Neutral baseline: 67.20)
     if categorical_features['Peer_Influence'] == 'Positive':
-        score_modifier *= 1.015  # +1.06 points
+        score_modifier *= 1.0062  # 67.62/67.20
     elif categorical_features['Peer_Influence'] == 'Negative':
-        score_modifier *= 0.985  # -1.06 points
+        score_modifier *= 0.9905  # 66.56/67.20
 
-    # Learning_Disabilities (±1.08 points difference)
+    # Learning_Disabilities (No baseline: 67.35)
     if categorical_features['Learning_Disabilities'] == 'Yes':
-        score_modifier *= 0.984  # -1.08 points
+        score_modifier *= 0.9839  # 66.27/67.35
+
+    # Parental_Education_Level (College baseline: 67.32)
+    if categorical_features['Parental_Education_Level'] == 'Postgraduate':
+        score_modifier *= 1.0097  # 67.97/67.32
+    elif categorical_features['Parental_Education_Level'] == 'High School':
+        score_modifier *= 0.9936  # 66.89/67.32
 
 
     # Apply categorical adjustments to base score
@@ -209,7 +218,6 @@ print(synthetic_df[numerical_cols].describe())
 print("\nCategorical feature distributions:")
 categorical_cols = ['Internet_Access', 'School_Type', 'Learning_Disabilities', 'Parental_Education_Level']
 for col in categorical_cols:
-    print(f"\n{col} distribution:")
     print(synthetic_df[col].value_counts())
 
 # Save to CSV
