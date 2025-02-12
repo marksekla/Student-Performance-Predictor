@@ -22,7 +22,7 @@ import numpy as np
 import os
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..')
-df = pd.read_csv(os.path.join(project_root, 'datasets', 'Salman.csv'))
+df = pd.read_csv(os.path.join(project_root, 'datasets', 'Salman', 'Salman.csv'))
 
 # List of categorical features
 categorical_features = [

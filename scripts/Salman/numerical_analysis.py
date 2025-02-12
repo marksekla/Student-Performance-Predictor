@@ -19,7 +19,7 @@ import numpy as np
 import os
 
 project_root = os.path.join(os.path.dirname(__file__), '..', '..')
-df = pd.read_csv(os.path.join(project_root, 'datasets', 'Salman.csv'))
+df = pd.read_csv(os.path.join(project_root, 'datasets', 'Salman', 'Salman.csv'))
 
 # Function to analyze score differences for numerical features
 def analyze_numerical_impact(df, feature):
