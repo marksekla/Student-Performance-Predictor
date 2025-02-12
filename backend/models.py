@@ -2,13 +2,7 @@ import os
 import pickle
 import sys
 
-# # MOVED TO app.py (changed name to scripts_path)
-# backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts'))
-# sys.path.append(backend_path)
-
-
 from feature_engineering_random_forest import feature_engineering
-
 
 # Dynamically construct the path to the .pkl file
 # This creates an absolute path because __file__ is absolute

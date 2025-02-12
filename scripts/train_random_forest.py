@@ -3,8 +3,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler
 import pickle
-from feature_engineering_random_forest import feature_engineering
+
+import sys
+import os
+
+# Add scripts folder to the path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts')))
+
+from feature_engineering_random_forest import feature_engineering 
 
 # Configurable parameters
 CONFIG = {
@@ -16,16 +25,24 @@ CONFIG = {
         "max_depth": 20,
         "random_state": 42,
     },
-    "output_model_file": "random_forest_pipeline.pkl",
+    "output_model_file": "random_forest_pipeline.pkl"
 }
 
+numeric_cols = ['StudyTimeWeekly', 'GPA']
+pass_through_cols = ['Age', 'Gender', 'Ethnicity', 'ParentalEducation', 'Absences', 'Tutoring', 'ParentalSupport', 'TotalEngagement']
+
+preprocessor = ColumnTransformer([
+    ("scaler", StandardScaler(), numeric_cols),
+    ("passthrough", "passthrough", pass_through_cols),
+], remainder="drop")
+
 # Feature engineering function
-#def feature_engineering(data):
-#    if all(col in data.columns for col in ['Extracurricular', 'Sports', 'Music', 'Volunteering']):
-#        data = data.copy()
-#        data['TotalEngagement'] = data[['Extracurricular', 'Sports', 'Music', 'Volunteering']].sum(axis=1)
-#        data = data.drop(columns=['Extracurricular', 'Sports', 'Music', 'Volunteering'])
-#    return data
+def feature_engineering(data):
+    if all(col in data.columns for col in ['Extracurricular', 'Sports', 'Music', 'Volunteering']):
+        data = data.copy()
+        data['TotalEngagement'] = data[['Extracurricular', 'Sports', 'Music', 'Volunteering']].sum(axis=1)
+        data = data.drop(columns=['Extracurricular', 'Sports', 'Music', 'Volunteering'])
+    return data
 
 # Load the dataset
 data = pd.read_csv(CONFIG["file_path"])
@@ -40,6 +57,7 @@ y = data["GradeClass"]
 # Define pipeline
 pipeline = Pipeline(steps=[
     ("feature_engineering", FunctionTransformer(feature_engineering)),
+    ("preprocessor", preprocessor),
     ("classifier", RandomForestClassifier(**CONFIG["model_params"])),
 ])
 

@@ -14,6 +14,7 @@ sys.path.append(root_dir)
 scripts_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts'))
 sys.path.append(scripts_path)
 
+from feature_engineering_random_forest import feature_engineering
 
 # Python can find and import from the 'routes' directory because it's a subdirectory of where app.py is located.
 # When Python sees `from routes import <whatever>`, it first looks in the same directory as the importing file (app.py), which is the backend/ directory.

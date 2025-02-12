@@ -1,11 +1,11 @@
 import pandas as pd
-import os
+# import os
 import pickle
 
 
-import sys
-backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend'))
-sys.path.append(backend_path)
+# import sys
+# backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts'))
+ #sys.path.append(backend_path)
 
 from feature_engineering_random_forest import feature_engineering
 
@@ -25,18 +25,18 @@ print("Random forest pipeline loaded successfully.")
 # Test data (ensure it matches the format of your training data)
 test_data = pd.DataFrame([{
     "Age" : 17,
-    "Gender" : 1,
+    "Gender" : 0,
     "Ethnicity" : 0,
     "ParentalEducation" : 2,
-    "StudyTimeWeekly" : 19.833722807854713,
-    "Absences" : 7,
+    "StudyTimeWeekly" : 16.3885570734073,
+    "Absences" : 3,
     "Tutoring" : 1,
-    "ParentalSupport" : 2,
+    "ParentalSupport" : 4,
     "Extracurricular" : 0,
     "Sports" : 0,
-    "Music" : 1,
+    "Music" : 0,
     "Volunteering" : 0,
-    "GPA" : 2.929195591667681
+    "GPA" : 3.3473567435078
 
 }])
 
