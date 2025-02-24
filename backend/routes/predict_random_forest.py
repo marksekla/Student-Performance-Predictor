@@ -23,12 +23,10 @@ predicted_grade_map = {1.0 : 'D',
 from flask import Blueprint, request, jsonify
 import pandas as pd
 
-from models import random_forest_pipeline
-
-import os
-import sys
-backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'scripts'))
-sys.path.append(backend_path)
+# backend.models is referring to models.py, NOT models/ folder
+# random_forest_pipeline is the variable inside of models.py, NOT the pickle file
+from backend.models import random_forest_pipeline
+from backend.config import scripts_path
 
 from feature_engineering_random_forest import feature_engineering
 

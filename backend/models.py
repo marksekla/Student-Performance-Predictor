@@ -1,6 +1,5 @@
 import os
 import pickle
-import sys
 
 from feature_engineering_random_forest import feature_engineering
 

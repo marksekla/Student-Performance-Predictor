@@ -1,9 +1,6 @@
 from flask import Blueprint, request, jsonify
 import pandas as pd
 import numpy as np
-import pickle
-import os
-import sys
 
 
 # backend.models is referring to models.py, NOT models/ folder
