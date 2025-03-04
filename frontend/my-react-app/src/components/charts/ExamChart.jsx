@@ -22,10 +22,10 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
     
     // Create percentile indicators
     const percentileData = [
-        { name: "25th Percentile", score: datasetStats.exam_score_percentiles['25'], description: "25% of students score below this" },
+        { name: "25th", score: datasetStats.exam_score_percentiles['25'], description: "25% of students score below this" },
         { name: "Median", score: datasetStats.exam_score_percentiles['50'], description: "50% of students score below this" },
-        { name: "75th Percentile", score: datasetStats.exam_score_percentiles['75'], description: "75% of students score below this" },
-        { name: "90th Percentile", score: datasetStats.exam_score_percentiles['90'], description: "90% of students score below this" }
+        { name: "75th", score: datasetStats.exam_score_percentiles['75'], description: "75% of students score below this" },
+        { name: "90th", score: datasetStats.exam_score_percentiles['90'], description: "90% of students score below this" }
     ];
     
     // Create user percentile text (assumes you have this data)
@@ -60,9 +60,22 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
                         data={chartData}
                         layout="vertical"
                         barCategoryGap={0}
+                        margin={{ top: 60, right: 0, left: 20, bottom: 50 }}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" domain={[0, 100]} />
+                        <XAxis 
+                            type="number" 
+                            domain={[0, 100]} 
+                            label={{ 
+                                value: "Exam Score (%)", 
+                                position: 'insideBottom',
+                                offset: 0,
+                                dy: 30,
+                                fill: 'white',
+                                fontSize: 16,
+                                fontWeight: 'bold'
+                            }} 
+                        />
                         <YAxis type="category" dataKey="name" hide />
                         <Tooltip 
                             formatter={(value, name) => {
@@ -72,7 +85,11 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
                                 return [range ? `${range.min}-${range.max}` : value, name];
                             }}
                         />
-                        <Legend />
+                        
+                        <Legend 
+                            verticalAlign="top"
+                            height={60}
+                        />
                         
                         {/* Grade bands */}
                         {gradeRanges.map((range) => (
@@ -84,7 +101,7 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
                             fill={range.fill}
                             barSize={70}
                         />
-                    ))}
+                        ))}
                         
                         {/* Percentile markers */}
                         {percentileData.map((item, index) => (
@@ -94,7 +111,13 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
                                 stroke="#000"
                                 strokeWidth={1}
                                 isFront={true}
-                                label={item.name}
+                                label={{
+                                    value: `${item.name} Percentile`,
+                                    position: index % 2 === 0 ? 'top' : 'bottom',
+                                    offset: 10,
+                                    fill: '#000',
+                                    fontSize: 12
+                                }}
                             />
                         ))}
                         
@@ -104,16 +127,30 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
                             stroke="red"
                             strokeWidth={3}
                             isFront={true}
-                            label="Your Score"
+                            label={{
+                                value: "Your Score",
+                                position: 'insideTopLeft',
+                                offset: 15,
+                                fill: 'red',
+                                fontSize: 14,
+                                fontWeight: 'bold'
+                            }}
                         />
                         
                         {/* Average score */}
                         <ReferenceLine
                             x={avgScore}
                             stroke="green"
-                            strokeWidth={2}
+                            strokeWidth={3}
                             isFront={true}
-                            label="Average"
+                            label={{
+                                value: "Average",
+                                position: 'insideTopLeft',
+                                offset: 15,
+                                fill: 'green',
+                                fontSize: 14,
+                                fontWeight: 'bold'
+                            }}
                         />
                     </BarChart>
                 </ResponsiveContainer>
