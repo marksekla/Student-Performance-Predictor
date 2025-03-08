@@ -15,11 +15,12 @@ parentalSupport_map = {
     'High' : 3,
     'Very High' : 4
 }
-predicted_grade_map = {1.0 : 'D',
+predicted_grade_map = {0.0 : "A",
+                       1.0 : 'B',
                        2.0 : 'C',
-                       3.0 : 'B',
-                       4.0 : 'A'}
-                       
+                       3.0 : 'D',
+                       4.0 : 'D'}
+
 from flask import Blueprint, request, jsonify
 import pandas as pd
 

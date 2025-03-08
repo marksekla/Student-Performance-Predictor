@@ -1,29 +1,20 @@
-import React, { useState } from 'react';
-import PredictionForm from './components/PredictionForm';
-import Results from './components/Results';
-import ChartsTest from './components/charts/ChartsTest';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+
+import Home from './components/pages/home';
+import RandomForestQuestionnaire from './components/pages/RandomForestQuestionnaire';
+import LinearRegressionQuestionnaire from './components/pages/LinearRegressionQuestionnaire';
 
 function App() {
-  // Manage prediction results in state
-  const [predictionResult, setPredictionResult] = useState(null);
-
-  // Callback to update the prediction result
-  const handlePrediction = (result) => {
-    setPredictionResult(result);
-  };
-
   return (
-    <>
-      <div className="App">
-        <h1>Student Performance Predictor</h1>
-        <PredictionForm onPrediction={handlePrediction} />
-        <Results result={predictionResult} />
-      </div>
+    <Routes>
+      {/* Home page where user picks the model */}
+      <Route path="/" element={<Home />} />
 
-      <div className="min-h-screen bg-gray-100">
-        <ChartsTest />
-      </div>
-    </>
+      {/* Routes for each model’s questionnaire */}
+      <Route path="/random-forest" element={<RandomForestQuestionnaire />} />
+      <Route path="/linear-regression" element={<LinearRegressionQuestionnaire />} />
+    </Routes>
   );
 }
 

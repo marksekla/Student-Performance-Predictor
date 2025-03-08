@@ -8,6 +8,7 @@ from routes.predict_linear_regression import predict_linear_regression_bp
 from routes.Salman_dataset_stats import Salman_dataset_stats_bp
 
 from routes.predict_random_forest import predict_random_forest_bp
+from routes.Mitch_dataset_stats import Mitch_dataset_stats_bp
 from routes.health import health_bp
 
 
@@ -22,6 +23,7 @@ app.register_blueprint(predict_linear_regression_bp)
 app.register_blueprint(Salman_dataset_stats_bp)
 
 app.register_blueprint(predict_random_forest_bp)
+app.register_blueprint(Mitch_dataset_stats_bp)
 
 
 if __name__ == '__main__':
