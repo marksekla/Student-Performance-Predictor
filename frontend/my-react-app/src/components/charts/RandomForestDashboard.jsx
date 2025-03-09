@@ -63,7 +63,7 @@ function RandomForestDashboard({ userInput, predictionResult }) {
       <h1>Random Forest Dashboard</h1>
       <RandomForestCharts
         datasetStats={datasetStats}
-        sampleUserInput={userInput} // Pass actual user input here
+        sampleUserInput={mappedUserInput} // Pass actual user input here
         predictionResult={predictionResult}
       />
     </div>

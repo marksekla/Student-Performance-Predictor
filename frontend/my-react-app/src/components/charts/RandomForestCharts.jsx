@@ -10,106 +10,90 @@ import {
   Legend
 } from 'recharts';
 
-// Mapping objects for renaming distribution keys
-const genderMap = {
-  '0': 'Male',
-  '1': 'Female'
-};
-const ethnicityMap = {
-  '0': 'Caucasian',
-  '1': 'African American',
-  '2': 'Asian',
-  '3': 'Other'
-};
-const parentalEducationMap = {
-  '0': 'None',
-  '1': 'High School',
-  '2': 'Some College',
-  '3': "Bachelor's",
-  '4': 'Higher'
-};
-const parentalSupportMap = {
-  '0': 'None',
-  '1': 'Low',
-  '2': 'Moderate',
-  '3': 'High',
-  '4': 'Very High'
-};
+// Custom Tooltip Component for Categorical Features
+const CustomTooltip = ({ active, payload, label }) => {
+  if (!active || !payload || !payload.length) {
+    return null;
+  }
 
-// Helper function to rename keys in a distribution object
-function renameDistributionKeys(dist, map) {
-  const newDist = {};
-  Object.entries(dist).forEach(([key, value]) => {
-    // Use the mapping if available; note: key may be a number or string
-    const mappedKey = map[String(key)] || key;
-    newDist[mappedKey] = value;
-  });
-  return newDist;
-}
+  return (
+    <div style={{ backgroundColor: '#fff', border: '1px solid #ccc', padding: '8px' }}>
+      <p style={{ margin: 0, fontWeight: 'bold' }}>{label}</p>
+      {payload.map((entry, idx) => {
+        // entry.dataKey is the current category and entry.payload.userChoice is the user's input for that feature.
+        const isUserInput = entry.payload.userChoice === entry.dataKey;
+        return (
+          <p
+            key={idx}
+            style={{
+              color: isUserInput ? 'red' : '#333',
+              margin: 0
+            }}
+          >
+            {entry.name}: {entry.value}%
+          </p>
+        );
+      })}
+    </div>
+  );
+};
 
 const RandomForestCharts = ({ datasetStats, sampleUserInput, predictionResult }) => {
-  console.log('userInput in RandomForestCharts:', sampleUserInput);
+  console.log('datasetStats in RandomForestCharts:', datasetStats);
 
   // Map prediction codes to grade labels
-  const predictionMapping = {
-    0: 'A',
-    1: 'B',
-    2: 'C',
-    3: 'D',
-    4: 'D'
-  };
+  const predictionMapping = { 0: 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'F' };
 
-  // Define categorical features. For those features that need remapping, apply renameDistributionKeys.
+  // Define categorical features
   const categoricalFeatures = [
     {
       name: 'Tutoring',
-      distribution: datasetStats.tutoring_dist, // Assume keys like "Yes", "No" are already good.
-      userChoice: sampleUserInput.tutoring ? 'Yes' : 'No'
+      userChoice: sampleUserInput.tutoring ? 'Yes' : 'No',
+      distribution: datasetStats.tutoring_dist
     },
     {
       name: 'Parental Support',
-      // Remap numeric keys to labels using parentalSupportMap
-      distribution: renameDistributionKeys(datasetStats.parentalsupport_dist, parentalSupportMap),
-      userChoice: sampleUserInput.parentalSupport // Should be a string like "High"
+      userChoice: sampleUserInput.parentalSupport, // e.g., "High"
+      distribution: datasetStats.parentalsupport_dist
     },
     {
       name: 'Extracurricular',
-      distribution: datasetStats.extracurricular_dist,
-      userChoice: sampleUserInput.extracurricular ? 'Yes' : 'No'
+      userChoice: sampleUserInput.extracurricular ? 'Yes' : 'No',
+      distribution: datasetStats.extracurricular_dist
     },
     {
       name: 'Sports',
-      distribution: datasetStats.sports_dist,
-      userChoice: sampleUserInput.sports ? 'Yes' : 'No'
+      userChoice: sampleUserInput.sports ? 'Yes' : 'No',
+      distribution: datasetStats.sports_dist
     },
     {
       name: 'Music',
-      distribution: datasetStats.music_dist,
-      userChoice: sampleUserInput.music ? 'Yes' : 'No'
+      userChoice: sampleUserInput.music ? 'Yes' : 'No',
+      distribution: datasetStats.music_dist
     },
     {
       name: 'Volunteering',
-      distribution: datasetStats.volunteering_dist,
-      userChoice: sampleUserInput.volunteering ? 'Yes' : 'No'
+      userChoice: sampleUserInput.volunteering ? 'Yes' : 'No',
+      distribution: datasetStats.volunteering_dist
     },
     {
       name: 'Parental Education',
-      distribution: renameDistributionKeys(datasetStats.parentaleducation_dist, parentalEducationMap),
-      userChoice: sampleUserInput.parentalEducation // e.g., "Some College"
+      userChoice: sampleUserInput.parentalEducation, // e.g., "Some College"
+      distribution: datasetStats.parentaleducation_dist
     },
     {
       name: 'Ethnicity',
-      distribution: renameDistributionKeys(datasetStats.ethnicity_dist, ethnicityMap),
-      userChoice: sampleUserInput.ethnicity // e.g., "Caucasian"
+      userChoice: sampleUserInput.ethnicity, // e.g., "Caucasian"
+      distribution: datasetStats.ethnicity_dist
     },
     {
       name: 'Gender',
-      distribution: renameDistributionKeys(datasetStats.gender_dist, genderMap),
-      userChoice: sampleUserInput.gender // e.g., "Male"
+      userChoice: sampleUserInput.gender, // e.g., "Male"
+      distribution: datasetStats.gender_dist
     }
   ];
 
-  // Convert categoricalFeatures into a data array for the bar chart.
+  // Convert each feature into a single data object for its mini-chart
   const categoricalData = categoricalFeatures.map(feature => {
     const dataEntry = { name: feature.name, userChoice: feature.userChoice };
     Object.keys(feature.distribution).forEach(cat => {
@@ -118,9 +102,7 @@ const RandomForestCharts = ({ datasetStats, sampleUserInput, predictionResult })
     return dataEntry;
   });
 
-  console.log('categoricalData:', categoricalData);
-
-  // For numeric features, prepare a data array comparing the user’s input with the dataset average.
+  // Prepare numeric features for their separate chart
   const numericFeatures = [
     {
       name: 'Age',
@@ -143,7 +125,6 @@ const RandomForestCharts = ({ datasetStats, sampleUserInput, predictionResult })
       average: datasetStats.gpa_avg
     }
   ];
-  console.log('numericFeatures:', numericFeatures);
 
   return (
     <div className="p-4">
@@ -151,23 +132,27 @@ const RandomForestCharts = ({ datasetStats, sampleUserInput, predictionResult })
         Predicted Grade: {predictionMapping[predictionResult]}
       </h2>
 
-      {/* Categorical Features Chart */}
+      {/* One mini-chart per categorical feature */}
       <div className="mb-8">
         <h3 className="text-lg font-bold mb-4">Categorical Features Distribution</h3>
-        <div style={{ width: '80vw', height: '40vh' }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={categoricalData} barGap={1}>
-              <XAxis dataKey="name" tickMargin={5} />
-              <YAxis label={{ value: 'Percentage', angle: -90 }} />
-              <Tooltip formatter={(value, name) => [`${value}`, name]} />
-              <Legend />
-              {/* Dynamically generate bars for each category (excluding 'name' and 'userChoice') */}
-              {categoricalData.length > 0 &&
-                Object.keys(categoricalData[0])
+        {categoricalData.map((item, i) => (
+          <div key={i} style={{ width: '80vw', height: '40vh', marginBottom: '2rem' }}>
+            <h4>{item.name}</h4>
+            <ResponsiveContainer width="100%" height="100%">
+              {/* We pass [item] as the data array so we have only one row */}
+              <BarChart data={[item]} barGap={1}>
+                <XAxis dataKey="name" tickMargin={5} />
+                <YAxis label={{ value: 'Percentage', angle: -90 }} />
+                {/* Use our custom tooltip here */}
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                {/* Render one bar per category key in this feature's distribution */}
+                {Object.keys(item)
                   .filter(key => key !== 'name' && key !== 'userChoice')
                   .map((category, index) => (
                     <Bar key={index} dataKey={category} legendType="none">
-                      {categoricalData.map((entry, idx) => (
+                      {/* Since our data is a single object wrapped in an array, map over that */}
+                      {[item].map((entry, idx) => (
                         <Cell
                           key={idx}
                           fill={entry.userChoice === category ? '#ff6b6b' : '#82ca9d'}
@@ -175,12 +160,13 @@ const RandomForestCharts = ({ datasetStats, sampleUserInput, predictionResult })
                       ))}
                     </Bar>
                   ))}
-              {/* Legend-only bars (for clarity) */}
-              <Bar name="Your Input" dataKey="" fill="#ff6b6b" legendType="square" />
-              <Bar name="Dataset Distribution" dataKey="" fill="#82ca9d" legendType="square" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+                {/* Legend-only bars (for clarity) */}
+                <Bar name="Your Input" dataKey="" fill="#ff6b6b" legendType="square" />
+                <Bar name="Dataset Distribution" dataKey="" fill="#82ca9d" legendType="square" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        ))}
       </div>
 
       {/* Numeric Features Comparison Chart */}

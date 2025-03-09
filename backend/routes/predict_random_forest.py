@@ -19,7 +19,7 @@ predicted_grade_map = {0.0 : "A",
                        1.0 : 'B',
                        2.0 : 'C',
                        3.0 : 'D',
-                       4.0 : 'D'}
+                       4.0 : 'F'}
 
 from flask import Blueprint, request, jsonify
 import pandas as pd

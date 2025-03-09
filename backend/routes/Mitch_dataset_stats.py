@@ -17,6 +17,32 @@ def compute_summary_statistics():
     # Load the dataset
     df = pd.read_csv(f'{root_dir}/data/combined_shuffled_student_performance.csv')
 
+    binary_mappings = {
+        'Tutoring': {0: 'No', 1: 'Yes'},
+        'Extracurricular': {0: 'No', 1: 'Yes'},
+        'Sports': {0: 'No', 1: 'Yes'},
+        'Music': {0: 'No', 1: 'Yes'},
+        'Volunteering': {0: 'No', 1: 'Yes'}
+    }
+    genderMap = { 0: 'Male', 1: 'Female' }
+    ethnicityMap = { 0: 'Caucasian', 1: 'African American', 2: 'Asian', 3: 'Other' }
+    parentalEducationMap = { 0: 'None', 1: 'High School', 2: 'Some College', 3: "Bachelor's", 4: 'Higher' }
+    parentalSupportMap = { 0: 'None', 1: 'Low', 2: 'Moderate', 3: 'High', 4: 'Very High' }
+
+    # Apply mappings for each binary categorical feature
+    for column, mapping in binary_mappings.items():
+        if column in df.columns:
+            df[column] = df[column].replace(mapping)
+
+    if 'Gender' in df.columns:
+        df['Gender'] = df['Gender'].replace(genderMap)
+    if 'Ethnicity' in df.columns:
+        df['Ethnicity'] = df['Ethnicity'].replace(ethnicityMap)
+    if 'ParentalEducation' in df.columns:
+        df['ParentalEducation'] = df['ParentalEducation'].replace(parentalEducationMap)
+    if 'ParentalSupport' in df.columns:
+        df['ParentalSupport'] = df['ParentalSupport'].replace(parentalSupportMap)
+
     # Compute numeric statistics
     numeric_stats = {}
     for feature in numeric_features:
