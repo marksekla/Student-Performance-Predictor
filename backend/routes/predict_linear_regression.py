@@ -12,7 +12,7 @@ from backend.models import linear_regression_pipeline
 predict_linear_regression_bp = Blueprint('predict_linear_regression', __name__)
 
 
-@predict_linear_regression_bp.route('/linear_regression', methods=['POST'])
+@predict_linear_regression_bp.route('/predict_linear_regression', methods=['POST'])
 def predict_linear_regression():
     try:
         # Get the JSON data from the request

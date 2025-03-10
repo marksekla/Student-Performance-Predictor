@@ -1,31 +1,31 @@
 import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, Legend } from 'recharts';
 
-const CategoricalCharts = ({ datasetStats, sampleUserInput }) => {
+const CategoricalCharts = ({ datasetStats, userInputs }) => {
     const binaryData = [
         {
             name: 'Extra Curricular Activities',
             Yes: datasetStats.extra_curricular_dist.Yes,
             No: datasetStats.extra_curricular_dist.No,
-            userChoice: sampleUserInput.extracurricularActivities
+            userChoice: userInputs.extracurricularActivities
         },
         {
             name: 'Internet Access',
             Yes: datasetStats.internet_access_dist.Yes,
             No: datasetStats.internet_access_dist.No,
-            userChoice: sampleUserInput.internetAccess
+            userChoice: userInputs.internetAccess
         },
         {
             name: 'Learning Disabilities',
             Yes: datasetStats.learning_disabilities_dist.Yes,
             No: datasetStats.learning_disabilities_dist.No,
-            userChoice: sampleUserInput.learningDisabilities
+            userChoice: userInputs.learningDisabilities
         },
         {
             name: 'Gender',
             Male: datasetStats.gender_dist.Male,
             Female: datasetStats.gender_dist.Female,
-            userChoice: sampleUserInput.gender
+            userChoice: userInputs.gender
         }
     ];
 
@@ -35,56 +35,56 @@ const CategoricalCharts = ({ datasetStats, sampleUserInput }) => {
             Near: datasetStats.distance_from_home_dist.Near,
             Moderate: datasetStats.distance_from_home_dist.Moderate,
             Far: datasetStats.distance_from_home_dist.Far,
-            userChoice: sampleUserInput.distanceFromHome
+            userChoice: userInputs.distanceFromHome
         },
         {
             name: 'Parental Involvement',
             Low: datasetStats.parental_involvement_dist.Low,
             Medium: datasetStats.parental_involvement_dist.Medium,
             High: datasetStats.parental_involvement_dist.High,
-            userChoice: sampleUserInput.parentalInvolvement
+            userChoice: userInputs.parentalInvolvement
         },
         {
             name: 'Access to Resources',
             Low: datasetStats.access_to_resources_dist.Low,
             Medium: datasetStats.access_to_resources_dist.Medium,
             High: datasetStats.access_to_resources_dist.High,
-            userChoice: sampleUserInput.accessToResources
+            userChoice: userInputs.accessToResources
         },
         {
             name: 'Motivation Level',
             Low: datasetStats.motivation_level_dist.Low,
             Medium: datasetStats.motivation_level_dist.Medium,
             High: datasetStats.motivation_level_dist.High,
-            userChoice: sampleUserInput.motivationLevel
+            userChoice: userInputs.motivationLevel
         },
         {
             name: 'Family Income',
             Low: datasetStats.family_income_dist.Low,
             Medium: datasetStats.family_income_dist.Medium,
             High: datasetStats.family_income_dist.High,
-            userChoice: sampleUserInput.familyIncome
+            userChoice: userInputs.familyIncome
         },
         {
             name: 'Teacher Quality',
             Low: datasetStats.teacher_quality_dist.Low,
             Medium: datasetStats.teacher_quality_dist.Medium,
             High: datasetStats.teacher_quality_dist.High,
-            userChoice: sampleUserInput.teacherQuality
+            userChoice: userInputs.teacherQuality
         },
         {
             name: 'Peer Influence',
             Negative: datasetStats.peer_influence_dist.Negative,
             Neutral: datasetStats.peer_influence_dist.Neutral,
             Positive: datasetStats.peer_influence_dist.Positive,
-            userChoice: sampleUserInput.peerInfluence
+            userChoice: userInputs.peerInfluence
         },
         {
             name: 'Parent Edu Level',
             'High School': datasetStats.parental_edu_level_dist['High School'],
             College: datasetStats.parental_edu_level_dist.College,
             Postgraduate: datasetStats.parental_edu_level_dist.Postgraduate,
-            userChoice: sampleUserInput.parentalEducationLevel
+            userChoice: userInputs.parentalEducationLevel
         }
     ];
 
@@ -125,11 +125,13 @@ const CategoricalCharts = ({ datasetStats, sampleUserInput }) => {
                         {/* Real data bars without names (won't show in legend) */}
                         {binaryCategories.map((category) => (
                             <Bar 
+                                key={`bar-${category}`}
                                 dataKey={category}
                                 legendType="none"
                             >
-                                {binaryData.map((entry) => (
+                                {binaryData.map((entry, idx) => (
                                     <Cell 
+                                        key={`cell-${category}-${idx}`}
                                         fill={category === entry.userChoice ? '#ff6b6b' : '#82ca9d'}
                                     />
                                 ))}
@@ -169,11 +171,13 @@ const CategoricalCharts = ({ datasetStats, sampleUserInput }) => {
                         {/* Real data bars without names (won't show in legend) */}
                         {multiCategories.map((category) => (
                             <Bar 
+                                key={`bar-${category}`}
                                 dataKey={category}
                                 legendType="none"
                             >
-                                {multiData.map((entry) => (
+                                {multiData.map((entry, idx) => (
                                     <Cell 
+                                        key={`cell-${category}-${idx}`}
                                         fill={category === entry.userChoice ? '#ff6b6b' : '#82ca9d'}
                                     />
                                 ))}

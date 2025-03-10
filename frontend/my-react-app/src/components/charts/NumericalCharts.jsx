@@ -1,32 +1,32 @@
 import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, Legend } from 'recharts';
 
-const NumericalCharts = ({ datasetStats, sampleUserInput }) => {
+const NumericalCharts = ({ datasetStats, userInputs }) => {
 
     const numericalData = [
             { 
                 name: 'Study Hours', 
-                user: sampleUserInput.hoursStudied, 
+                user: userInputs.hoursStudied, 
                 average: datasetStats.hours_studied_avg.toFixed(1) 
             },
             { 
                 name: 'Previous Scores', 
-                user: sampleUserInput.previousScores, 
+                user: userInputs.previousScores, 
                 average: datasetStats.previous_scores_avg.toFixed(1) 
             },
             { 
                 name: 'Physical Activity', 
-                user: sampleUserInput.physicalActivity, 
+                user: userInputs.physicalActivity, 
                 average: datasetStats.physical_activity_avg.toFixed(1) 
             },
             { 
                 name: 'Attendance', 
-                user: sampleUserInput.attendance, 
+                user: userInputs.attendance, 
                 average: datasetStats.attendance_avg.toFixed(1) 
             },
             { 
                 name: 'Tutoring Sessions', 
-                user: sampleUserInput.tutoringSessions, 
+                user: userInputs.tutoringSessions, 
                 average: datasetStats.tutoring_sessions_avg.toFixed(1) 
             }
         ];
