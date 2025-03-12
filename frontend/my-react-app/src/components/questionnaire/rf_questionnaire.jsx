@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-'../../styles/questionnaire/questionnaire.css';
+import '../../styles/questionnaire/questionnaire.css';
 
 const questions = [
     {
@@ -88,9 +88,9 @@ const questions = [
 function Questionnaire({ onPrediction, onUserInput, modelType }) {
     const [currentStep, setCurrentStep] = useState(0);
     const [answers, setAnswers] = useState({});
-    
+
     const currentQuestion = questions[currentStep];
-    
+
     // For number inputs
     const handleNumberChange = (e) => {
         setAnswers({
@@ -98,7 +98,7 @@ function Questionnaire({ onPrediction, onUserInput, modelType }) {
             [currentQuestion.id]: e.target.value,
         });
     };
-    
+
     // For single selection buttons (including image-based ones)
     const handleSelectionChange = (value) => {
         setAnswers({
@@ -106,7 +106,7 @@ function Questionnaire({ onPrediction, onUserInput, modelType }) {
             [currentQuestion.id]: value,
         });
     };
-    
+
     // For multi-select questions
     const handleMultiChange = (value) => {
         const currentSelections = answers[currentQuestion.id] || [];
@@ -122,7 +122,7 @@ function Questionnaire({ onPrediction, onUserInput, modelType }) {
             });
         }
     };
-    
+
     // When on last question, build the payload and submit it
     const nextStep = async () => {
         if (currentStep < questions.length - 1) {
@@ -166,10 +166,10 @@ function Questionnaire({ onPrediction, onUserInput, modelType }) {
                 Volunteering: Array.isArray(answers[8]) ? answers[8].includes('volunteering') : false,
                 GPA: parseFloat(answers[9]),
             };
-            
+
             // Choose endpoint based on modelType prop.
             const endpoint = 'http://localhost:5000/predict_random_forest';
-            
+
             try {
                 const response = await fetch(endpoint, {
                     method: 'POST',
@@ -190,15 +190,15 @@ function Questionnaire({ onPrediction, onUserInput, modelType }) {
             }
         }
     };
-    
+
     const prevStep = () => {
         if (currentStep > 0) {
             setCurrentStep(currentStep - 1);
         }
     };
-    
+
     const progressPercentage = ((currentStep + 1) / questions.length) * 100;
-    
+
     // Render question based on type
     const renderQuestion = () => {
         switch (currentQuestion.type) {
@@ -220,8 +220,8 @@ function Questionnaire({ onPrediction, onUserInput, modelType }) {
                                 key={option.value}
                                 onClick={() => handleSelectionChange(option.value)}
                                 className={`option-button ${
-                                    option.value === answers[currentQuestion.id]  
-                                        ? 'selected' 
+                                    option.value === answers[currentQuestion.id]
+                                        ? 'selected'
                                         : ''
                                 }`}
                             >
@@ -270,12 +270,12 @@ function Questionnaire({ onPrediction, onUserInput, modelType }) {
         <div className="questionnaire-container">
             {/* Progress Bar */}
             <div className="progress-container">
-                <div 
+                <div
                     className="progress-bar"
                     style={{ width: `${progressPercentage}%` }}
                 ></div>
             </div>
-            
+
             {/* Question Card */}
             <div className="question-card">
                 <h2 className="question-number">
@@ -284,10 +284,10 @@ function Questionnaire({ onPrediction, onUserInput, modelType }) {
                 <p className="question-text">{currentQuestion.text}</p>
                 {renderQuestion()}
             </div>
-            
+
             {/* Navigation Buttons */}
             <div className="navigation-buttons">
-                <button 
+                <button
                     onClick={prevStep}
                     className={`nav-button prev-button ${
                         currentStep > 0 ? '' : 'disabled'
@@ -296,8 +296,8 @@ function Questionnaire({ onPrediction, onUserInput, modelType }) {
                 >
                     Previous
                 </button>
-                
-                <button 
+
+                <button
                     onClick={nextStep}
                     className="nav-button next-button"
                 >
