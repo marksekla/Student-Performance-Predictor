@@ -180,8 +180,11 @@ function Questionnaire({ onPrediction, onUserInput, modelType }) {
                 if (data.success) {
                     // Pass the prediction back to the parent component
                     if (onPrediction) {
-                        onPrediction(data.prediction);
-                    }
+                    onPrediction({
+                        prediction: data.prediction,
+                        featureImportance: data.featureImportance,
+                    });
+                }
                 } else {
                     console.error('Prediction Error:', data.error);
                 }

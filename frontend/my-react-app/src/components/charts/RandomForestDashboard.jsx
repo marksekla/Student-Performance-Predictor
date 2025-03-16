@@ -14,14 +14,14 @@ function mapUserInput(rawUserInput) {
         studyTimeWeekly: parseFloat(rawUserInput[5]),  // "15" -> 15
         absences: parseInt(rawUserInput[6], 10),       // "2"  -> 2
         gpa: parseFloat(rawUserInput[9]),             // "3.5"-> 3.5
-        
+
         // Categorical fields (map codes to strings):
         // e.g. userInput[2] === 0 => 'Male'
         gender: genderMap[rawUserInput[2]],
         ethnicity: ethnicityMap[rawUserInput[3]],
         parentalEducation: parentalEducationMap[rawUserInput[4]],
         parentalSupport: parentalSupportMap[rawUserInput[7]],
-        
+
         // Multi-select booleans (check if array includes the string):
         tutoring: rawUserInput[8]?.includes('tutoring'),
         extracurricular: rawUserInput[8]?.includes('extracurricular'),
@@ -34,7 +34,7 @@ function mapUserInput(rawUserInput) {
 function RandomForestDashboard({ userInput, predictionResult }) {
     const [datasetStats, setDatasetStats] = useState(null);
     const [loading, setLoading] = useState(true);
-    
+
     // Fetch the dataset statistics from your backend endpoint
     useEffect(() => {
         fetch('http://localhost:5000/Mitch_dataset_stats') // Replace with your actual endpoint URL
@@ -48,23 +48,30 @@ function RandomForestDashboard({ userInput, predictionResult }) {
             setLoading(false);
         });
     }, []);
-    
+
     if (loading) {
         return <div>Loading stats...</div>;
     }
     console.log('Raw userInput before mapping:', userInput);
-    
+
     const mappedUserInput = mapUserInput(userInput);
-    
+
     console.log('Mapped userInput:', mappedUserInput); // Verify the mapping
-    // Instead of a sampleUserInput, we now use the actual userInput prop
+
+    // Merge feature importance from the prediction result into datasetStats.
+    // predictionResult is now an object with { prediction, featureImportance }
+    const mergedDatasetStats = {
+        ...datasetStats,
+        featureImportance: predictionResult?.featureImportance || datasetStats.featureImportance,
+    };
+
     return (
         <div>
             <h1>Random Forest Dashboard</h1>
-                <RandomForestCharts
-                datasetStats={datasetStats}
+            <RandomForestCharts
+                datasetStats={mergedDatasetStats}
                 sampleUserInput={mappedUserInput} // Pass actual user input here
-                predictionResult={predictionResult}
+                predictionResult={predictionResult?.prediction} // Use the prediction value
             />
         </div>
     );
