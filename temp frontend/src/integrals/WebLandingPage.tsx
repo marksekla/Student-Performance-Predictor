@@ -297,11 +297,10 @@ export default function WebLandingPage() {
     marginBottom: "20vh",
   }}
 >
-  <Box 
+  <Box
     component="button"
     onClick={() => {
-      console.log("Navigating to /sponsor-us");
-      navigate("/sponsor-us");
+      navigate("/questionnaire");
     }}
     sx={{
       backgroundColor: "#5626a1",
@@ -393,10 +392,10 @@ export default function WebLandingPage() {
               />
             </Box>
         }
-       
+
         <Box id="paddingdiv-006" sx={{ height: "25px" }}></Box>
         <StayConnectedContainer id="contact" />
-        
+
         {/* Translucent App Bar, Last Eleme,nt, On Top of All */}
         <Box id="paddingdiv-006" sx={{ height: "50px" }}></Box>
 

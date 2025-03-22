@@ -20,7 +20,7 @@ function MemberCarousel(props?: { id: string, sx?: SxProps }) {
       firstName: "Mitch",
       lastName: "Buchanan",
       leadership: ["Team Member"],
-      imagePath: "/mitchbuchanan.jpeg"
+      imagePath: "/mitchbuchanan.jpg"
     },
     {
       firstName: "Mark",
@@ -50,18 +50,18 @@ function MemberCarousel(props?: { id: string, sx?: SxProps }) {
         // No background color or gradient
       }}
     >
-      <Typography sx={{ 
-        fontSize: '3rem', 
-        fontWeight: 'bold', 
-        marginBottom: '60px', 
+      <Typography sx={{
+        fontSize: '3rem',
+        fontWeight: 'bold',
+        marginBottom: '60px',
         textAlign: 'center',
         color: 'white'
       }}>
         Our Team
       </Typography>
-      
-      <Box sx={{ 
-        display: 'flex', 
+
+      <Box sx={{
+        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
@@ -69,7 +69,7 @@ function MemberCarousel(props?: { id: string, sx?: SxProps }) {
         flexWrap: { xs: 'wrap', md: 'nowrap' } // Stack on mobile, side by side on desktop
       }}>
         {staticMembers.map((member, index) => (
-          <Box 
+          <Box
             key={index}
             sx={{
               position: 'relative',
@@ -89,8 +89,8 @@ function MemberCarousel(props?: { id: string, sx?: SxProps }) {
               }
             }}
           >
-            <img 
-              src={member.imagePath} 
+            <img
+              src={member.imagePath}
               alt={`${member.firstName} ${member.lastName}`}
               style={{
                 width: "100%",
@@ -124,4 +124,3 @@ function MemberCarousel(props?: { id: string, sx?: SxProps }) {
 }
 
 export default MemberCarousel;
-

@@ -9,7 +9,7 @@ import WebProjectsPage from './integrals/WebProjectsPage'
 import WebTierPage from './integrals/WebTierPage'
 import 'atropos/css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import WebSponsorTiers from "./integrals/WebSponsorTiers.tsx";
+import WebSponsorTiers from "./integrals/WebQuestionnaire.tsx";
 import DonateLandingPage from "./integrals/DonateLandingPage.tsx";
 
 const queryClient = new QueryClient();
@@ -25,7 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<App />}>
             <Route path="/project/:projectId" element={<WebProjectsPage />} />
             <Route path="tier/:tier" element={<WebTierPage />} />
-            <Route path="/sponsor-us" element={<WebSponsorTiers />} />
+            <Route path="/questionnaire" element={<WebSponsorTiers />} />
           </Route>
         </Routes>
       </ThemeProvider>

@@ -1,10 +1,11 @@
- 
+
 # Logs and temporary files
 *.log
 *.tmp
 *.bak
 *.swp
 .DS_Store
+node_modules
 
 # Dataset files
 data/*.csv
@@ -21,6 +22,7 @@ venv/
 # Build output for frontend
 frontend/build/
 frontend/dist/
+
 
 # IDE specific files
 .vscode/
