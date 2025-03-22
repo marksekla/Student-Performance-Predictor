@@ -20,7 +20,7 @@ function WebAppBar(props: {
   translucent?: boolean;
   links: WebAppBarLink[];
 }) {
-  // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
   const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false);
   const nav = useNavigate();
 

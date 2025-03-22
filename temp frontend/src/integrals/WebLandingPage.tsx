@@ -300,7 +300,7 @@ export default function WebLandingPage() {
   <Box
     component="button"
     onClick={() => {
-      navigate("/questionnaire");
+      navigate("/choice");
     }}
     sx={{
       backgroundColor: "#5626a1",

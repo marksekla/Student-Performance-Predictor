@@ -9,8 +9,9 @@ import WebProjectsPage from './integrals/WebProjectsPage'
 import WebTierPage from './integrals/WebTierPage'
 import 'atropos/css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import WebSponsorTiers from "./integrals/WebQuestionnaire.tsx";
-import DonateLandingPage from "./integrals/DonateLandingPage.tsx";
+import RF_WebQuestionnaire from "./integrals/RF_WebQuestionnaire.tsx";
+import LR_WebQuestionnaire from "./integrals/LR_WebQuestionnaire.tsx";
+import ModelChoicePage from "./integrals/ModelChoice.tsx";
 
 const queryClient = new QueryClient();
 
@@ -20,12 +21,13 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <ThemeProvider theme={AppThemeController.baseTheme}>
         <CssBaseline />
         <Routes>
-          <Route path="/donate" element={<DonateLandingPage />} />
+          <Route path="/choice" element={<ModelChoicePage />} />
           <Route path="/" element={<WebLandingPage />} />
           <Route path="/" element={<App />}>
-            <Route path="/project/:projectId" element={<WebProjectsPage />} />
-            <Route path="tier/:tier" element={<WebTierPage />} />
-            <Route path="/questionnaire" element={<WebSponsorTiers />} />
+          <Route path="/project/:projectId" element={<WebProjectsPage />} />
+          <Route path="tier/:tier" element={<WebTierPage />} />
+          <Route path="/random-forest" element={<RF_WebQuestionnaire />} />
+          <Route path="/linear-regression" element={<LR_WebQuestionnaire />} />
           </Route>
         </Routes>
       </ThemeProvider>

@@ -3,7 +3,7 @@ import { Box, Typography, LinearProgress, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import SponsorshipCard from "../components/SponsorshipCard";
 
-export default function WebSponsorTiers() {
+export default function WebQuestionnaire() {
   const navigate = useNavigate();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, any>>({});
@@ -15,12 +15,12 @@ export default function WebSponsorTiers() {
     document.body.style.margin = "0";
     // Remove the overflow: hidden that was preventing scrolling
     document.body.style.overflow = "auto";
-    
+
     // Reset selections when changing questions
     setSelectedOption(null);
     setTextInput("");
     setRangeValue(5);
-    
+
     // Load previous answer if exists
     const savedAnswer = answers[questions[currentQuestionIndex].id];
     if (savedAnswer !== undefined) {
@@ -37,124 +37,85 @@ export default function WebSponsorTiers() {
   // List of questions for the questionnaire
   const questions: Question[] = [
     {
-      id: 1,
-      text: "What is your current educational level?",
-      type: "multiple",
-      options: ["High School", "Undergraduate", "Graduate", "Doctoral", "Other"]
+        id: 1,
+        text: 'What is your age?',
+        type: 'number',
+        inputProps: { step: '1', min: '0' },
     },
     {
-      id: 2,
-      text: "How many hours per week do you spend studying?",
-      type: "range",
-      min: 0,
-      max: 40
+        id: 2,
+        text: 'What is your Gender?',
+        type: 'selection',
+        subtype: 'button-image', // for button with image
+        options: [
+            { label: 'Male', value: 0, image: 'male.png' }, // replace with your image URL
+            { label: 'Female', value: 1, image: 'female.png' }, // replace with your image URL
+        ],
     },
     {
-      id: 3,
-      text: "What subject areas are you most interested in?",
-      type: "multiple",
-      options: ["Science", "Technology", "Engineering", "Mathematics", "Arts", "Humanities"]
+        id: 3,
+        text: 'What is your Ethnicity?',
+        type: 'selection',
+        options: [
+            { label: 'Caucasian', value: 0 },
+            { label: 'African American', value: 1 },
+            { label: 'Asian', value: 2 },
+            { label: 'Other', value: 3 },
+        ],
     },
     {
-      id: 4,
-      text: "Do you prefer studying alone or in groups?",
-      type: "multiple",
-      options: ["Alone", "Small groups (2-3)", "Medium groups (4-6)", "Large groups (7+)", "It depends on the subject"]
+        id: 4,
+        text: "What education did your parents complete?",
+        type: 'selection',
+        options: [
+            { label: 'None', value: 0 },
+            { label: 'High School', value: 1 },
+            { label: 'Some College', value: 2 },
+            { label: "Bachelor's", value: 3 },
+            { label: 'Higher', value: 4 },
+        ],
     },
     {
-      id: 5,
-      text: "What time of day are you most productive for studying?",
-      type: "multiple",
-      options: ["Early morning", "Late morning", "Afternoon", "Evening", "Late night"]
+        id: 5,
+        text: 'How many hours do you study per week?',
+        type: 'number',
+        inputProps: { step: '0.1', min: '0' },
     },
     {
-      id: 6,
-      text: "How do you learn best?",
-      type: "multiple",
-      options: ["Visual (images, diagrams)", "Auditory (lectures, discussions)", "Reading/Writing", "Kinesthetic (hands-on activities)", "Mixed methods"]
+        id: 6,
+        text: 'How many absences did you have during your last semester?',
+        type: 'number',
+        inputProps: { step: '1', min: '0' },
     },
     {
-      id: 7,
-      text: "What are your academic goals for this year?",
-      type: "text"
+        id: 7,
+        text: 'How supportive are parents with your education?',
+        type: 'selection',
+        options: [
+            { label: 'None', value: 0 },
+            { label: 'Low', value: 1 },
+            { label: 'Moderate', value: 2 },
+            { label: 'High', value: 3 },
+            { label: 'Very High', value: 4 },
+        ],
     },
     {
-      id: 8,
-      text: "On a scale of 1-10, how would you rate your time management skills?",
-      type: "range",
-      min: 1,
-      max: 10
+        id: 8,
+        text: 'Choose all that apply: Tutoring, Extracurricular, Sports, Music, Volunteering',
+        type: 'multi',
+        options: [
+            { label: 'Tutoring', value: 'tutoring' },
+            { label: 'Extracurricular', value: 'extracurricular' },
+            { label: 'Sports', value: 'sports' },
+            { label: 'Music', value: 'music' },
+            { label: 'Volunteering', value: 'volunteering' },
+        ],
     },
     {
-      id: 9,
-      text: "Do you currently use any digital tools to help with your studies?",
-      type: "multiple",
-      options: ["Yes, regularly", "Yes, occasionally", "No, but I'd like to", "No, I prefer traditional methods"]
-    },
-    {
-      id: 10,
-      text: "How often do you review previously learned material?",
-      type: "multiple",
-      options: ["Daily", "Weekly", "Monthly", "Before exams only", "Rarely"]
-    },
-    {
-      id: 11,
-      text: "What challenges do you face in your academic journey?",
-      type: "text"
-    },
-    {
-      id: 12,
-      text: "How important is getting good grades to you?",
-      type: "range",
-      min: 1,
-      max: 10
-    },
-    {
-      id: 13,
-      text: "Do you currently work while studying?",
-      type: "multiple",
-      options: ["Yes, full-time", "Yes, part-time", "Yes, occasionally", "No"]
-    },
-    {
-      id: 14,
-      text: "How comfortable are you asking for help when you don't understand something?",
-      type: "range",
-      min: 1,
-      max: 10
-    },
-    {
-      id: 15,
-      text: "What motivates you to learn?",
-      type: "text"
-    },
-    {
-      id: 16,
-      text: "How do you handle academic stress?",
-      type: "multiple",
-      options: ["Exercise", "Meditation/Mindfulness", "Talking with friends/family", "Taking breaks", "Other techniques"]
-    },
-    {
-      id: 17,
-      text: "On a scale of 1-10, how satisfied are you with your current academic performance?",
-      type: "range",
-      min: 1,
-      max: 10
-    },
-    {
-      id: 18,
-      text: "Do you have a dedicated study space?",
-      type: "multiple",
-      options: ["Yes, quiet and distraction-free", "Yes, but with some distractions", "No, I study wherever I can", "I prefer studying in public spaces"]
-    },
-    {
-      id: 19,
-      text: "What study techniques have you found most effective?",
-      type: "text"
-    },
-    {
-      id: 20,
-      text: "What specific areas would you like to improve in your academic performance?",
-      type: "text"
+        id: 9,
+        text: 'What is your GPA (Grade point average)?',
+        type: 'number',
+        inputProps: { step: '0.1', min: '0', max: '4' },
     }
   ];
 
@@ -229,25 +190,25 @@ export default function WebSponsorTiers() {
 
       {/* Progress Bar */}
       <Box sx={{ width: "70%", marginBottom: "20px" }}>
-        <LinearProgress 
-          variant="determinate" 
-          value={progress} 
-          sx={{ 
-            height: 10, 
+        <LinearProgress
+          variant="determinate"
+          value={progress}
+          sx={{
+            height: 10,
             borderRadius: 5,
             backgroundColor: "rgba(255, 255, 255, 0.2)",
             '& .MuiLinearProgress-bar': {
               backgroundColor: lightBlue, // Changed to light blue
             }
-          }} 
+          }}
         />
         <Typography variant="body2" sx={{ color: "white", textAlign: "right", mt: 1 }}>
           Question {currentQuestionIndex + 1} of {questions.length}
         </Typography>
       </Box>
-      
+
       {/* Questionnaire Box */}
-      <Box 
+      <Box
         sx={{
           width: "70%",
           maxWidth: "800px",
@@ -267,7 +228,7 @@ export default function WebSponsorTiers() {
         <Typography sx={{ color: "white", fontSize: "1.8rem", fontWeight: "500", mb: 4 }}>
           {currentQuestion.text}
         </Typography>
-        
+
         {/* Answer options based on question type */}
         <Box sx={{ mb: 4 }}>
           {currentQuestion.type === "multiple" && (
@@ -296,9 +257,9 @@ export default function WebSponsorTiers() {
               ))}
             </Box>
           )}
-          
+
           {currentQuestion.type === "text" && (
-            <Box 
+            <Box
               component="textarea"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
@@ -321,21 +282,21 @@ export default function WebSponsorTiers() {
               placeholder="Type your answer here..."
             />
           )}
-          
+
           {currentQuestion.type === "range" && (
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-              <Box 
-                sx={{ 
-                  width: "100%", 
-                  display: "flex", 
-                  justifyContent: "space-between", 
-                  color: "white" 
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  color: "white"
                 }}
               >
                 <Typography>{currentQuestion.min}</Typography>
                 <Typography>{currentQuestion.max}</Typography>
               </Box>
-              
+
               <Box sx={{ width: "100%", display: "flex", alignItems: "center", gap: 2 }}>
                 <input
                   type="range"
@@ -353,14 +314,14 @@ export default function WebSponsorTiers() {
                   }}
                 />
               </Box>
-              
+
               <Typography sx={{ color: "white", fontSize: "1.5rem", fontWeight: "bold" }}>
                 {rangeValue}
               </Typography>
             </Box>
           )}
         </Box>
-        
+
         {/* Navigation Buttons */}
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
           <Button
@@ -380,7 +341,7 @@ export default function WebSponsorTiers() {
           >
             Previous
           </Button>
-          
+
           <Button
             onClick={handleNext}
             disabled={isNextDisabled()}
