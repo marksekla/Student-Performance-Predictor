@@ -18,7 +18,7 @@ export default function ModelChoice() {
 
   const cards = [
     {
-      title: "Random Forest",
+      title: "Letter Grade",
       route: "/random-forest",
       description: "This questionnaire helps collect categorical and numerical inputs for a Random Forest model to predict student performance based on behavior and study habits.",
     },

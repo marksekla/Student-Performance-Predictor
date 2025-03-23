@@ -36,6 +36,7 @@
     "react-scroll-motion": "^0.3.3",
     "react-scroll-parallax": "^3.4.5",
     "react-spring": "^9.7.3",
+    "recharts": "^2.15.1",
     "styled-components": "^6.1.9",
     "swiper": "^11.1.0",
     "tailwind-merge": "^2.3.0",
