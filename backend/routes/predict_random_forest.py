@@ -60,11 +60,14 @@ def predict_random_forest():
         # Ensure `random_forest_pipeline` is defined
         prediction = random_forest_pipeline.predict(input_data)
 
-        print('Prediction:', prediction)
+        feature_importance = random_forest_pipeline.feature_importance_data
+
+        print("Loaded feature importance data:", getattr(random_forest_pipeline, 'feature_importance_data', None))
 
         return jsonify({
             'success': True,
             'prediction': float(prediction[0]),
+            'featureImportance': random_forest_pipeline.feature_importance_data,
             'model': 'Random Forest'
         })
 

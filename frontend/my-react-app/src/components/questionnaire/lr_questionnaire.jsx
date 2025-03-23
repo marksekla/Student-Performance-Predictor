@@ -172,9 +172,9 @@ const questions = [
 function LRQuestionnaire({ onUserSubmit, onPrediction }) {
     const [currentStep, setCurrentStep] = useState(0);
     const [answers, setAnswers] = useState({});
-    
+
     const currentQuestion = questions[currentStep];
-    
+
     // For number inputs
     const handleNumberChange = (e) => {
         setAnswers({
@@ -182,7 +182,7 @@ function LRQuestionnaire({ onUserSubmit, onPrediction }) {
             [currentQuestion.id]: e.target.value,
         });
     };
-    
+
     // For single selection buttons
     const handleSelectionChange = (value) => {
         setAnswers({
@@ -190,15 +190,15 @@ function LRQuestionnaire({ onUserSubmit, onPrediction }) {
             [currentQuestion.id]: value,
         });
     };
-    
-    // Goes to next question. But when on last question, build the payload and submit it
+
+    // When on last question, build the payload and submit it
     const nextStep = async () => {
         if (currentStep < questions.length - 1) {
             setCurrentStep(currentStep + 1);
-        } else {            
+        } else {
             // Map collected answers to the expected payload structure for Linear Regression
             const payload = {};
-            
+
             // Build the payload using the question keys for proper mapping
             questions.forEach(question => {
                 const answer = answers[question.id];
@@ -206,7 +206,7 @@ function LRQuestionnaire({ onUserSubmit, onPrediction }) {
             });
 
             onUserSubmit(payload);
-            
+
             try {
                 const response = await fetch('http://localhost:5000/predict_linear_regression', {
                     method: 'POST',
@@ -225,13 +225,13 @@ function LRQuestionnaire({ onUserSubmit, onPrediction }) {
             }
         }
     };
-    
+
     const prevStep = () => {
         if (currentStep > 0) {
             setCurrentStep(currentStep - 1);
         }
     };
-    
+
     const progressPercentage = ((currentStep + 1) / questions.length) * 100;
 
     const renderQuestion = () => {
@@ -254,8 +254,8 @@ function LRQuestionnaire({ onUserSubmit, onPrediction }) {
                                 key={option.value}
                                 onClick={() => handleSelectionChange(option.value)}
                                 className={`option-button ${
-                                    option.value === answers[currentQuestion.id] 
-                                        ? 'selected' 
+                                    option.value === answers[currentQuestion.id]
+                                        ? 'selected'
                                         : ''
                                 }`}
                             >
@@ -268,17 +268,17 @@ function LRQuestionnaire({ onUserSubmit, onPrediction }) {
                 return null;
         }
     };
-    
+
     return (
         <div className="questionnaire-container">
             {/* Progress Bar */}
             <div className="progress-container">
-                <div 
+                <div
                     className="progress-bar"
                     style={{ width: `${progressPercentage}%` }}
                 ></div>
             </div>
-            
+
             {/* Question Card */}
             <div className="question-card">
                 <h2 className="question-number">
@@ -287,10 +287,10 @@ function LRQuestionnaire({ onUserSubmit, onPrediction }) {
                 <p className="question-text">{currentQuestion.text}</p>
                 {renderQuestion()}
             </div>
-            
+
             {/* Navigation Buttons */}
             <div className="navigation-buttons">
-                <button 
+                <button
                     onClick={prevStep}
                     className={`nav-button prev-button ${
                         currentStep > 0 ? '' : 'disabled'
@@ -299,8 +299,8 @@ function LRQuestionnaire({ onUserSubmit, onPrediction }) {
                 >
                     Previous
                 </button>
-                
-                <button 
+
+                <button
                     onClick={nextStep}
                     className="nav-button next-button"
                 >
@@ -309,7 +309,7 @@ function LRQuestionnaire({ onUserSubmit, onPrediction }) {
             </div>
         </div>
     );
-    
+
 }
 
 export default LRQuestionnaire;
