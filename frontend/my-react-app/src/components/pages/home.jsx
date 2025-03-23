@@ -6,19 +6,19 @@ function Home() {
     
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h1>Select a Model</h1>
+            <h1>Select a Questionaire</h1>
             <button
                 onClick={() => navigate('/random-forest')}
                 style={{ margin: '10px', padding: '10px 20px' }}
                 >
-                Random Forest
+                Questionnaire 1
             </button>
             
             <button
                 onClick={() => navigate('/linear-regression')}
                 style={{ margin: '10px', padding: '10px 20px' }}
                 >
-                Linear Regression
+                Questionnaire 2
             </button>
         </div>
     );

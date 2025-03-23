@@ -15,7 +15,7 @@ function LinearRegressionQuestionnaire() {
     
     return (
         <div style={{ margin: '20px' }}>
-            <h2>Linear Regression Questionnaire</h2>
+            <h2>Questionnaire 2</h2>
             <LR_Questionnaire onUserSubmit={setUserInputs} onPrediction={handlePrediction} />
 
             {/* Only show charts if the user has submitted */}

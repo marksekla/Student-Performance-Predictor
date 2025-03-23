@@ -191,7 +191,7 @@ function LRQuestionnaire({ onUserSubmit, onPrediction }) {
         });
     };
     
-    // When on last question, build the payload and submit it
+    // Goes to next question. But when on last question, build the payload and submit it
     const nextStep = async () => {
         if (currentStep < questions.length - 1) {
             setCurrentStep(currentStep + 1);

@@ -8,12 +8,12 @@ import LinearRegressionQuestionnaire from './components/pages/LinearRegressionQu
 function App() {
     return (
         <Routes>
-        {/* Home page where user picks the model */}
-        <Route path="/" element={<Home />} />
-        
-        {/* Routes for each model’s questionnaire */}
-        <Route path="/random-forest" element={<RandomForestQuestionnaire />} />
-        <Route path="/linear-regression" element={<LinearRegressionQuestionnaire />} />
+            {/* Home page where user picks the model */}
+            <Route path="/" element={<Home />} />
+            
+            {/* Routes for each model’s questionnaire */}
+            <Route path="/random-forest" element={<RandomForestQuestionnaire />} />
+            <Route path="/linear-regression" element={<LinearRegressionQuestionnaire />} />
         </Routes>
     );
 }

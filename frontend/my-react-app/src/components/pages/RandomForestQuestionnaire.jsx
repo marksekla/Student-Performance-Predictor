@@ -16,7 +16,7 @@ function RandomForestQuestionnaire() {
     
     return (
         <div style={{ margin: '20px' }}>
-            <h2>Random Forest Questionnaire</h2>
+            <h2>Questionnaire 1</h2>
             <Questionnaire
             onPrediction={handlePrediction}
             onUserInput={setUserInput}

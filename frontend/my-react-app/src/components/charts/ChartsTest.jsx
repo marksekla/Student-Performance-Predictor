@@ -17,7 +17,7 @@ const ChartsTest = ({userInputs, predictionResult}) => {
     
 
     // Wait for data to load
-    if (!datasetStats || !predictionResult) return <div>Loading charts...</div>;
+    if (!datasetStats || !predictionResult) return <div>Loading results...</div>;
 
     
     return (
