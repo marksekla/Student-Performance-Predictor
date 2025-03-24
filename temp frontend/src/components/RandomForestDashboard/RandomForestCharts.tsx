@@ -94,9 +94,6 @@ const CategoricalBarChart = ({ item }: { item: any }) => {
 };
 
 const RandomForestCharts = ({ datasetStats, userInput, predictionResult }: any) => {
-  if (!predictionResult) {
-    return <Typography>Loading chart data...</Typography>;
-  }
 
   // Map user inputs to text using the mapping objects
   const mappedGender = GENDER_MAP[userInput.Gender] || 'Unknown';
