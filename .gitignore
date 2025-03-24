@@ -7,11 +7,6 @@
 .DS_Store
 node_modules
 
-# Dataset files
-data/*.csv
-data/*.xlsx
-data/*.json
-
 # Python cache and compiled files
 __pycache__/
 *.pyc
