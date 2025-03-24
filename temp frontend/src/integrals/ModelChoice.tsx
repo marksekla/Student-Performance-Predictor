@@ -2,18 +2,12 @@ import React, { useState } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 import LoopIcon from "@mui/icons-material/Loop";
 import { useNavigate } from "react-router-dom";
-import WebAppBar from "../components/WebAppBar";
-import { WebAppBarLink } from "../components/WebAppBar/interfaces";
+
 
 export default function ModelChoice() {
   const navigate = useNavigate();
   const lightBlue = "#64B5F6";
 
-  const webAppBarLinks: WebAppBarLink[] = [
-        { title: "Home", anchor: "/#maindiv-001" },
-        { title: "Projects", anchor: "/#subdiv-002" },
-        { title: "Contact Us", anchor: "/#contact" },
-    ];
 
 
   const cards = [
@@ -48,12 +42,12 @@ export default function ModelChoice() {
         flexDirection: "column",
         background: "#14213D", // Changed to solid color as requested
         position: "relative",
+        paddingTop: "30px",
         paddingBottom: "40px", // Add bottom padding for better spacing
         overflow: "visible", // Allow content to overflow for scrolling
       }}
     >
 
-      <WebAppBar links={webAppBarLinks}/>
       <Typography variant="h3" sx={{ color: "white", mb: 2 }}>
         Choose a Model
       </Typography>

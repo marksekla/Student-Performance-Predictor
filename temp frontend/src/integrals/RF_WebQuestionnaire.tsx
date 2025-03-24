@@ -10,28 +10,10 @@ export default function WebQuestionnaire() {
   const [selectedOption, setSelectedOption] = useState<string | number | null>(null);
   const [textInput, setTextInput] = useState("");
   const [rangeValue, setRangeValue] = useState<number>(0);
+  const [hasRangeChanged, setHasRangeChanged] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [predictionResult, setPredictionResult] = useState(null);
   const [userInput, setUserInput] = useState({});
-
-  useEffect(() => {
-    document.body.style.margin = "0";
-    document.body.style.overflow = "auto";
-    setSelectedOption(null);
-    setTextInput("");
-    setRangeValue(0);
-
-    const savedAnswer = answers[questions[currentQuestionIndex].id];
-    if (savedAnswer !== undefined) {
-      if (questions[currentQuestionIndex].type === "multiple") {
-        setSelectedOption(savedAnswer);
-      } else if (questions[currentQuestionIndex].type === "text") {
-        setTextInput(savedAnswer);
-      } else if (questions[currentQuestionIndex].type === "range" || questions[currentQuestionIndex].type === "number") {
-        setRangeValue(savedAnswer);
-      }
-    }
-  }, [currentQuestionIndex]);
 
   const questions = [
     { id: 1, text: 'What is your age?', type: 'number', min: 15, max: 25, inputProps: { step: '1'} },
@@ -48,85 +30,133 @@ export default function WebQuestionnaire() {
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
-  const handleNext = () => {
-  let updatedAnswers = { ...answers };
+  useEffect(() => {
+    document.body.style.margin = "0";
+    document.body.style.overflow = "auto";
 
-  if (currentQuestion.type === "selection" && selectedOption !== null) {
-    updatedAnswers[currentQuestion.id] = selectedOption;
-  } else if (currentQuestion.type === "range" || currentQuestion.type === "number") {
-    const valueToSave = currentQuestion.inputProps?.step === "0.01"
-      ? parseFloat(rangeValue.toFixed(2))
-      : rangeValue;
-    updatedAnswers[currentQuestion.id] = valueToSave;
-  } else if (currentQuestion.type === "multi") {
-    const currentSelections = answers[currentQuestion.id] || [];
-    updatedAnswers[currentQuestion.id] = currentSelections;
-  }
+    // Reset inputs based on question type and any saved answers
+    if (currentQuestion.type === "selection") {
+      setSelectedOption(
+        answers[currentQuestion.id] !== undefined ? answers[currentQuestion.id] : null
+      );
+    }
+    if (currentQuestion.type === "text") {
+      setTextInput(
+        answers[currentQuestion.id] !== undefined ? answers[currentQuestion.id] : ""
+      );
+    }
+    if (currentQuestion.type === "number" || currentQuestion.type === "range") {
+      setRangeValue(
+        answers[currentQuestion.id] !== undefined
+          ? answers[currentQuestion.id]
+          : currentQuestion.min ?? 0
+      );
+      setHasRangeChanged(answers[currentQuestion.id] !== undefined);
+    }
+  }, [currentQuestionIndex]);
 
-  setAnswers(updatedAnswers);
-
-  if (currentQuestionIndex === questions.length - 1) {
-    handleSubmit(updatedAnswers);
-  } else {
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
-  }
-};
-
-const handleSubmit = async (finalAnswers: Record<number, any>) => {
-  const selectedPrograms = finalAnswers[8] || [];
-
-  const formattedInput = {
-    Age: finalAnswers[1],
-    Gender: finalAnswers[2],               // as string: "Male" or "Female"
-    Ethnicity: finalAnswers[3],           // as string: "Caucasian", etc.
-    ParentalEducation: finalAnswers[4],   // string, eg. "High School"
-    StudyTimeWeekly: finalAnswers[5],           // number
-    Absences: finalAnswers[6],            // number
-    ParentalSupport: finalAnswers[7],     // string: "High", etc.
-    Tutoring: selectedPrograms.includes("tutoring"),
-    Extracurricular: selectedPrograms.includes("extracurricular"),
-    Sports: selectedPrograms.includes("sports"),
-    Music: selectedPrograms.includes("music"),
-    Volunteering: selectedPrograms.includes("volunteering"),
-    GPA: finalAnswers[9]                 // number
+  // Save the current answer based on the question type and return the updated object
+  const saveCurrentAnswer = () => {
+    let updatedAnswers = { ...answers };
+    if (currentQuestion.type === "selection" && selectedOption !== null) {
+      updatedAnswers[currentQuestion.id] = selectedOption;
+    } else if (currentQuestion.type === "text" && textInput.trim()) {
+      updatedAnswers[currentQuestion.id] = textInput;
+    } else if (
+      (currentQuestion.type === "number" || currentQuestion.type === "range") &&
+      (hasRangeChanged || answers[currentQuestion.id] !== undefined)
+    ) {
+      const valueToSave =
+        currentQuestion.inputProps?.step === "0.01"
+          ? parseFloat(rangeValue.toFixed(2))
+          : rangeValue;
+      updatedAnswers[currentQuestion.id] = valueToSave;
+    }
+    setAnswers(updatedAnswers);
+    return updatedAnswers; // Return the new updatedAnswers object
   };
 
-  try {
-    const response = await fetch("http://localhost:5000/predict_random_forest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formattedInput),
-    });
+  const handleNext = () => {
+    // Save current answer and retrieve the updated object
+    const updatedAnswers = saveCurrentAnswer();
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP ${response.status}: ${errorText}`);
+    // If this is the last question, submit using the newly updatedAnswers
+    if (currentQuestionIndex === questions.length - 1) {
+      handleSubmit(updatedAnswers);
+    } else {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
+  };
 
-    const result = await response.json();
+  const handleSubmit = async (finalAnswers: Record<number, any>) => {
+    const selectedPrograms = finalAnswers[8] || [];
 
-    navigate("/rf-results", {
-      state: {
-        userInput: formattedInput,
-        predictionResult: result
+    const formattedInput = {
+      Age: finalAnswers[1],
+      Gender: finalAnswers[2],
+      Ethnicity: finalAnswers[3],
+      ParentalEducation: finalAnswers[4],
+      StudyTimeWeekly: finalAnswers[5],
+      Absences: finalAnswers[6],
+      ParentalSupport: finalAnswers[7],
+      Tutoring: selectedPrograms.includes("tutoring"),
+      Extracurricular: selectedPrograms.includes("extracurricular"),
+      Sports: selectedPrograms.includes("sports"),
+      Music: selectedPrograms.includes("music"),
+      Volunteering: selectedPrograms.includes("volunteering"),
+      GPA: finalAnswers[9],
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/predict_random_forest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formattedInput),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
-    });
-  } catch (err: any) {
-    console.error("Fetch error:", err.message || err);
-  }
-};
 
+      const result = await response.json();
+
+      navigate("/rf-results", {
+        state: {
+          userInput: formattedInput,
+          predictionResult: result
+        }
+      });
+    } catch (err: any) {
+      console.error("Fetch error:", err.message || err);
+    }
+  };
+
+  // Save answer before going back
   const handlePrevious = () => {
+    saveCurrentAnswer();
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
 
+  // Disable Next button until an answer is provided for the current question
   const isNextDisabled = () => {
-    if (currentQuestion.type === "multiple" && selectedOption === null) return true;
+    if (currentQuestion.type === "selection" && selectedOption === null) return true;
     if (currentQuestion.type === "text" && !textInput.trim()) return true;
+    if (
+      (currentQuestion.type === "number" || currentQuestion.type === "range") &&
+      answers[currentQuestion.id] === undefined &&
+      !hasRangeChanged
+    ) {
+      return true;
+    }
+    if (currentQuestion.type === "multi") {
+      const selections = answers[currentQuestion.id] || [];
+      if (selections.length === 0) return true;
+    }
     return false;
   };
 
@@ -156,7 +186,7 @@ const handleSubmit = async (finalAnswers: Record<number, any>) => {
             height: 10,
             borderRadius: 5,
             backgroundColor: "rgba(255, 255, 255, 0.2)",
-            '& .MuiLinearProgress-bar': { backgroundColor: lightBlue }
+            "& .MuiLinearProgress-bar": { backgroundColor: lightBlue }
           }}
         />
         <Typography variant="body2" sx={{ color: "white", textAlign: "right", mt: 1 }}>
@@ -186,73 +216,79 @@ const handleSubmit = async (finalAnswers: Record<number, any>) => {
 
         {currentQuestion.type === "multi" && (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {currentQuestion.options?.map((option) => {
-            const selectedValues: any[] = answers[currentQuestion.id] || [];
-            const isSelected = selectedValues.includes(option.value);
+            {currentQuestion.options?.map((option) => {
+              const selectedValues: any[] = answers[currentQuestion.id] || [];
+              const isSelected = selectedValues.includes(option.value);
 
-            return (
+              return (
+                <Button
+                  key={option.value}
+                  variant={isSelected ? "contained" : "outlined"}
+                  onClick={() => {
+                    const updated = isSelected
+                      ? selectedValues.filter((v) => v !== option.value)
+                      : [...selectedValues, option.value];
+                    setAnswers({ ...answers, [currentQuestion.id]: updated });
+                  }}
+                  sx={{
+                    color: "white",
+                    borderColor: "rgba(255, 255, 255, 0.5)",
+                    backgroundColor: isSelected ? lightBlue : "transparent",
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      borderColor: "white"
+                    }
+                  }}
+                >
+                  {option.label}
+                </Button>
+              );
+            })}
+          </Box>
+        )}
+
+        {currentQuestion.type === "selection" && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {currentQuestion.options?.map((option) => (
               <Button
                 key={option.value}
-                variant={isSelected ? "contained" : "outlined"}
-                onClick={() => {
-                  const updated = isSelected
-                    ? selectedValues.filter((v) => v !== option.value)
-                    : [...selectedValues, option.value];
-                  setAnswers({ ...answers, [currentQuestion.id]: updated });
-                }}
+                variant={selectedOption === option.value ? "contained" : "outlined"}
+                onClick={() => setSelectedOption(option.value)}
                 sx={{
                   color: "white",
                   borderColor: "rgba(255, 255, 255, 0.5)",
-                  backgroundColor: isSelected ? lightBlue : "transparent",
+                  backgroundColor: selectedOption === option.value ? lightBlue : "transparent",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
                   textTransform: "none",
                   fontSize: "1rem",
-                  '&:hover': {
+                  gap: 2,
+                  "&:hover": {
                     backgroundColor: "rgba(255, 255, 255, 0.1)",
                     borderColor: "white"
                   }
                 }}
               >
-              {option.label}
+                {option.label}
               </Button>
-            );
-          })}
-        </Box>
-      )}
-
-        {currentQuestion.type === "selection" && (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {currentQuestion.options?.map((option) => (
-            <Button
-            key={option.value}
-            variant={selectedOption === option.value ? "contained" : "outlined"}
-            onClick={() => setSelectedOption(option.value)}
-            sx={{
-              color: "white",
-              borderColor: "rgba(255, 255, 255, 0.5)",
-              backgroundColor: selectedOption === option.value ? lightBlue : "transparent",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              textTransform: "none",
-              fontSize: "1rem",
-              gap: 2,
-              '&:hover': {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                borderColor: "white",
-              }
-            }}
-            >
-            {option.label}
-            </Button>
-          ))}
+            ))}
           </Box>
         )}
-
 
         <Box sx={{ mb: 4 }}>
           {(currentQuestion.type === "range" || currentQuestion.type === "number") && (
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-              <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between", color: "white" }}>
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  color: "white"
+                }}
+              >
                 <Typography>{currentQuestion.min ?? 0}</Typography>
                 <Typography>{currentQuestion.max ?? 100}</Typography>
               </Box>
@@ -264,7 +300,10 @@ const handleSubmit = async (finalAnswers: Record<number, any>) => {
                   max={currentQuestion.max ?? 100}
                   step={parseFloat(currentQuestion.inputProps?.step ?? "1")}
                   value={rangeValue}
-                  onChange={(e) => setRangeValue(parseFloat(e.target.value))}
+                  onChange={(e) => {
+                    setRangeValue(parseFloat(e.target.value));
+                    setHasRangeChanged(true);
+                  }}
                   style={{
                     width: "100%",
                     height: "8px",
@@ -293,7 +332,7 @@ const handleSubmit = async (finalAnswers: Record<number, any>) => {
               textTransform: "none",
               fontSize: "1rem",
               opacity: currentQuestionIndex === 0 ? 0.5 : 1,
-              '&:hover': {
+              "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.1)",
                 borderColor: "white"
               }
@@ -313,18 +352,17 @@ const handleSubmit = async (finalAnswers: Record<number, any>) => {
               padding: "8px 24px",
               borderRadius: "20px",
               fontWeight: "bold",
-              '&:hover': {
+              "&:hover": {
                 backgroundColor: "#90CAF9",
               },
-              '&:disabled': {
+              "&:disabled": {
                 backgroundColor: "rgba(100, 181, 246, 0.5)",
-                color: "rgba(20, 33, 61, 0.5)"
+                color: "rgba(20, 33, 61, 0.5)",
               }
             }}
           >
             {currentQuestionIndex === questions.length - 1 ? "Submit" : "Next"}
           </Button>
-
         </Box>
       </Box>
     </Box>

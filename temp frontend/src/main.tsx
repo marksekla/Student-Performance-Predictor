@@ -24,7 +24,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <ThemeProvider theme={AppThemeController.baseTheme}>
         <CssBaseline />
         <Routes>
-          <Route path="/choice" element={<ModelChoicePage />} />
           <Route path="/" element={<WebLandingPage />} />
           <Route path="/" element={<App />}>
           <Route path="/project/:projectId" element={<WebProjectsPage />} />
@@ -33,6 +32,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="/linear-regression" element={<LR_WebQuestionnaire />} />
           <Route path="/rf-results" element={<ResultsPage />} />
           <Route path="/results" element={<Results />} />
+          <Route path="/choice" element={<ModelChoicePage />} />
           </Route>
         </Routes>
       </ThemeProvider>

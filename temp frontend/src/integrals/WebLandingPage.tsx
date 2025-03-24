@@ -51,15 +51,17 @@ const LandingProjectCards = forwardRef((props: {
 
   React.useEffect(() => {
     scrollYProgress.on("change", (e) => {
-      if (cardsRef.current)
-        cardsRef.current.scrollLeft = (cardsRef.current.scrollWidth - cardsRef.current.clientWidth) * e;
+      if (cardsRef.current) {
+        cardsRef.current.scrollLeft =
+          (cardsRef.current.scrollWidth - cardsRef.current.clientWidth) * e;
+      }
     });
-  }, []);
+  }, [scrollYProgress]);
 
   return (
     <Box ref={ref}>
       {
-        (!props.mobileView) ?
+        !props.mobileView ? (
           <Box
             ref={cardContainer}
             sx={{
@@ -83,14 +85,21 @@ const LandingProjectCards = forwardRef((props: {
                 <LandingProjectCard mobileView={false} key={project._id} project={project} />
               ))}
             </Box>
-          </Box> :
-          <VerticalCardStack title="Projects" sx={{ padding: '20px' }}>
-            {
-              props.data.map((project: LandingProject) => (
-                <LandingProjectCard mobileView key={project._id} project={project} />
-              ))
-            }
-          </VerticalCardStack>
+          </Box>
+        ) : (
+          /* Removed VerticalCardStack here and replaced with a simple Box */
+          <Box sx={{ padding: "20px", display: "flex", flexDirection: "column", gap: "20px" }}>
+            <Typography
+              variant="h5"
+              sx={{ color: "white", mb: 2 }}
+            >
+              Projects
+            </Typography>
+            {props.data.map((project: LandingProject) => (
+              <LandingProjectCard mobileView key={project._id} project={project} />
+            ))}
+          </Box>
+        )
       }
     </Box>
   );
@@ -118,7 +127,7 @@ export default function WebLandingPage() {
       case -2: return "linear-gradient(to right, #667db6, #0082c8, #0082c8, #667db6);"
       default: return "black";
     }
-  };
+  }
 
   /* AppBar and Events State */
   const mobileView = useMediaQuery(AppThemeController.baseTheme.breakpoints.down('md'));
@@ -143,13 +152,12 @@ export default function WebLandingPage() {
   /* Gradient Change */
   function SetBackgroundMode(variant: number) {
     setTransitionBackground((tb) => {
-      if (tb.end != variant) {
+      if (tb.end !== variant) {
         setIsTransitioning(true);
         tb.start = tb.end;
         tb.end = variant;
         console.warn(`Gradient Transition: ${tb.start} -> ${tb.end}`);
       }
-
       return tb;
     });
   }
@@ -176,22 +184,16 @@ export default function WebLandingPage() {
       const projectsBoxEnd = projectsBoxStart + (projectsBoxRef?.current?.offsetHeight ?? 0) + 50;
       const teamBoxStart = (teamBoxRef?.current?.offsetTop ?? 0) - 50;
       const teamBoxEnd = teamBoxStart + (teamBoxRef?.current?.offsetHeight ?? 0) + 100;
-      const sponsorsBoxStart = (sponsorsBoxRef?.current?.offsetTop ?? 0) - 100;
-      const sponsorsBoxEnd = sponsorsBoxStart + (sponsorsBoxRef?.current?.offsetHeight ?? 0) + 400;
-      //const highlightsBoxEnd = highlightsBoxStart + 1000;
 
-
-      if (mainBoxPos > projectsBoxStart && mainBoxPos < projectsBoxEnd)
+      if (mainBoxPos > projectsBoxStart && mainBoxPos < projectsBoxEnd) {
         SetBackgroundMode(1);
-
-      else if (mainBoxPos > teamBoxStart && mainBoxPos < teamBoxEnd)
+      } else if (mainBoxPos > teamBoxStart && mainBoxPos < teamBoxEnd) {
         SetBackgroundMode(2);
-
-      else
+      } else {
         SetBackgroundMode(0);
-
+      }
     });
-  }, []);
+  }, [scrollYProgress]);
 
   const [statsContainerPosition] = React.useState<"fixed" | "unset">("fixed");
 
@@ -257,148 +259,144 @@ export default function WebLandingPage() {
                 Analyze. Predict.<br />Improve Student Success.
               </Typography>
               <Box
-  id="subdiv-001"
-  ref={aboutBoxRef}
-  sx={{
-    display: "flex",
-    flex: 1,
-    flexWrap: "wrap",
-    gap: 4,
-    marginLeft: { md: 8 },
-    marginRight: { md: 8 },
-    marginTop: "5vw",
-    flexDirection: { xs: "column", md: "row" },
-  }}
->
-  <Stats
-    end={1000000}
-    title={"Predictions Made"}
-    prefix={""}
-    minWidth={336}
-    alignSelf={{ xs: "center", md: "flex-start" }}
-  />
-  <Stats end={300} title={"Students Analyzed"} minWidth={81} />
-  <Stats
-    end={90000}
-    title={"Performance Reports Generated"}
-    minWidth={267}
-    alignSelf={{ xs: "center", md: "flex-end" }}
-  />
-</Box>
+                id="subdiv-001"
+                ref={aboutBoxRef}
+                sx={{
+                  display: "flex",
+                  flex: 1,
+                  flexWrap: "wrap",
+                  gap: 4,
+                  marginLeft: { md: 8 },
+                  marginRight: { md: 8 },
+                  marginTop: "5vw",
+                  flexDirection: { xs: "column", md: "row" },
+                }}
+              >
+                <Stats
+                  end={1000000}
+                  title={"Predictions Made"}
+                  prefix={""}
+                  minWidth={336}
+                  alignSelf={{ xs: "center", md: "flex-start" }}
+                />
+                <Stats end={300} title={"Students Analyzed"} minWidth={81} />
+                <Stats
+                  end={90000}
+                  title={"Performance Reports Generated"}
+                  minWidth={267}
+                  alignSelf={{ xs: "center", md: "flex-end" }}
+                />
+              </Box>
 
-{/* Add the button in a separate container, positioned in the middle of the page */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100%",
+                  marginTop: "11vh",
+                  marginBottom: "20vh",
+                }}
+              >
+                <Box
+                  component="button"
+                  onClick={() => {
+                    navigate("/choice");
+                  }}
+                  sx={{
+                    backgroundColor: "#5626a1",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "25px",
+                    padding: "20px 40px",
+                    fontSize: "1.6rem",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    transition: "background-color 0.3s, transform 0.2s",
+                    "&:hover": {
+                      backgroundColor: "#6b32bb",
+                      transform: "scale(1.08)",
+                    },
+                    boxShadow: "0 6px 12px rgba(0, 0, 0, 0.25)",
+                  }}
+                >
+                  Start Now
+                </Box>
+              </Box>
 
-<Box
-  sx={{
-    display: "flex",
-    justifyContent: "center",
-    width: "100%",
-    marginTop: "11vh",
-    marginBottom: "20vh",
-  }}
->
-  <Box
-    component="button"
-    onClick={() => {
-      navigate("/choice");
-    }}
-    sx={{
-      backgroundColor: "#5626a1",
-      color: "white",
-      border: "none",
-      borderRadius: "25px",
-      padding: "20px 40px",
-      fontSize: "1.6rem",
-      fontWeight: "bold",
-      cursor: "pointer",
-      transition: "background-color 0.3s, transform 0.2s",
-      "&:hover": {
-        backgroundColor: "#6b32bb",
-        transform: "scale(1.08)",
-      },
-      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.25)",
-    }}
-  >
-    Start Now
-  </Box>
-</Box>
-
-<Box id="paddingdiv-002" sx={{ height: "100vh" }} />
+              <Box id="paddingdiv-002" sx={{ height: "100vh" }} />
             </Animator>
           </ScrollPage>
         </ScrollContainer>
 
         <Box id="paddingdiv-002" sx={{ height: "100vh" }} />
-        {
-          (mobileView) ?
-            <Box ref={projectsBoxRef} sx={{ padding: '10px' }} id="subdiv-002">
-              <LandingProjectCards
-                sx={{}}
-                mobileView={true}
-                data={data}
-                isLoading={isLoading}
-                error={error}
-              />
-            </Box> :
-            <Box ref={projectsBoxRef} id="subdiv-002">
-              <LandingProjectCards
-                sx={{ height: '300vh' }}
-                data={data}
-                isLoading={isLoading}
-                error={error}
-              />
-            </Box>
-        }
 
-        {
+        {mobileView ? (
+          <Box ref={projectsBoxRef} sx={{ padding: "10px" }} id="subdiv-002">
+            <LandingProjectCards
+              sx={{}}
+              mobileView={true}
+              data={data}
+              isLoading={isLoading}
+              error={error}
+            />
+          </Box>
+        ) : (
+          <Box ref={projectsBoxRef} id="subdiv-002">
+            <LandingProjectCards
+              sx={{ height: "300vh" }}
+              data={data}
+              isLoading={isLoading}
+              error={error}
+            />
+          </Box>
+        )}
 
-          /* FUTURE: Add Appropriate Case */
-          (mobileView && !mobileView) ? <></> :
+        {mobileView && !mobileView ? (
+          <></>
+        ) : (
+          <Box
+            id="team"
+            ref={teamBoxRef}
+            sx={{
+              paddingTop: "0px",
+              background:
+                "linear-gradient(0deg, #00FFFF00 0%, #000000FF 44%, #000000FF 50%, #000000FF 56%, #073AFF00 100%)",
+              transition: "opacity 0.5s ease",
+            }}
+          >
+            <Sparkles
+              id="members_sparkles"
+              background="transparent"
+              minSize={0.6}
+              maxSize={1.4}
+              particleDensity={50}
+              particleColor="#FFFFFF"
+            />
             <Box
-              id="team"
-              ref={teamBoxRef}
               sx={{
-                paddingTop: "0px",
-                background:
-                  "linear-gradient(0deg, #00FFFF00 0%, #000000FF 44%, #000000FF 50%, #000000FF 56%, #073AFF00 100%)",
-                transition: "opacity 0.5s ease",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              <Sparkles
-                id="members_sparkles"
-                background="transparent"
-                minSize={0.6}
-                maxSize={1.4}
-                particleDensity={50}
-                particleColor="#FFFFFF"
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <MemberCarousel id="member-carousel" />
-              </Box>
-              <Sparkles
-                id="members_sparkles2"
-                background="transparent"
-                minSize={0.6}
-                maxSize={1.4}
-                particleDensity={50}
-                particleColor="#FFFFFF"
-              />
+              <MemberCarousel id="member-carousel" />
             </Box>
-        }
+            <Sparkles
+              id="members_sparkles2"
+              background="transparent"
+              minSize={0.6}
+              maxSize={1.4}
+              particleDensity={50}
+              particleColor="#FFFFFF"
+            />
+          </Box>
+        )}
 
         <Box id="paddingdiv-006" sx={{ height: "25px" }}></Box>
         <StayConnectedContainer id="contact" />
 
-        {/* Translucent App Bar, Last Eleme,nt, On Top of All */}
         <Box id="paddingdiv-006" sx={{ height: "50px" }}></Box>
-
         <Footer />
         <WebAppBar
           links={webAppBarLinks}
@@ -412,6 +410,7 @@ export default function WebLandingPage() {
           }}
         />
       </Box>
+
       <Box
         id="maindiv-002"
         sx={{
@@ -430,7 +429,7 @@ export default function WebLandingPage() {
             background: GetGradient(transitionBackground.start),
             transition: 'opacity 0.4s',
             animation: 'plasma 6s ease infinite',
-            backgroundBlendMode: transitionBackground.start == 3 ? 'color-dodge' : 'unset',
+            backgroundBlendMode: transitionBackground.start === 3 ? 'color-dodge' : 'unset',
             opacity: isTransitioning ? 0.5 : 1,
             zIndex: 1,
           },
@@ -453,11 +452,8 @@ export default function WebLandingPage() {
   );
 }
 
-const DelayedZoomOut = (
-  from: number,
-  to: number,
-  delay: number
-): Animation => ({
+/* -------------------- Animations below -------------------- */
+const DelayedZoomOut = (from: number, to: number, delay: number): Animation => ({
   out: {
     style: {
       transform: (value: number) => {
@@ -468,11 +464,7 @@ const DelayedZoomOut = (
   },
 });
 
-const DelayedFadeOut = (
-  from: number,
-  to: number,
-  delay: number
-): Animation => ({
+const DelayedFadeOut = (from: number, to: number, delay: number): Animation => ({
   out: {
     style: {
       opacity: (value: number) => {
@@ -488,7 +480,9 @@ const DelayedMoveOut = (dx: number, dy: number, delay: number): Animation => ({
     style: {
       transform: (value: number) => {
         value = Math.max(value - delay, 0);
-        return `translate(${0 * (1 - value) + dx * value}px, ${0 * (1 - value) + dy * value}px)`;
+        return `translate(${0 * (1 - value) + dx * value}px, ${
+          0 * (1 - value) + dy * value
+        }px)`;
       },
     },
   },

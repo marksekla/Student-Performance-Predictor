@@ -7,10 +7,6 @@ import {
   Tooltip,
   Cell,
   ResponsiveContainer,
-  RadarChart,
-  Radar,
-  PolarGrid,
-  PolarAngleAxis,
   Legend,
 } from "recharts";
 import { Box, Typography } from "@mui/material";
@@ -42,7 +38,7 @@ const PARENT_EDUCATION_MAP: Record<number, string> = {
   0: 'None',
   1: 'High school',
   2: 'Some College',
-  3: 'Bachelor’s',
+  3: 'Bachelor\'s',
   4: 'Higher',
 };
 
@@ -60,9 +56,15 @@ const CategoricalBarChart = ({ item }: { item: any }) => {
 
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={[item]} barGap={1} barSize={50}>
+      <BarChart
+        data={[item]}
+        barGap={1}
+        barSize={50}
+        margin={{ left: 40, right: 40, top: 20, bottom: 20 }}
+      >
         <XAxis dataKey="name" tickMargin={5} />
-        <YAxis label={{ value: 'Percentage', angle: -90 }} />
+        {/* Removed the YAxis label */}
+        <YAxis />
         <Tooltip />
         <Legend />
         {Object.keys(item)
@@ -207,11 +209,6 @@ const RandomForestCharts = ({ datasetStats, userInput, predictionResult }: any) 
         Categorical Features Distribution
       </Typography>
 
-      {/*
-        1) Wrap the categorical charts in a flex container
-        2) Use 'flexWrap: "wrap"' so they can wrap onto new lines if needed
-        3) Give each chart a fixed width so they can sit side by side
-      */}
       <Box
         sx={{
           display: 'flex',
@@ -291,9 +288,16 @@ const RandomForestCharts = ({ datasetStats, userInput, predictionResult }: any) 
               layout="vertical"
               margin={{ top: 20, right: 20, left: 90, bottom: 20 }}
             >
-              <XAxis type="number" />
+              {/*
+                Use a tickFormatter for X-axis to show 0–100%,
+                and a Tooltip formatter for the hover text
+              */}
+              <XAxis
+                type="number"
+                tickFormatter={(value: number) => `${(value * 100).toFixed(0)}%`}
+              />
               <YAxis type="category" dataKey="name" interval={0} />
-              <Tooltip />
+              <Tooltip formatter={(value: number) => `${(value * 100).toFixed(2)}%`} />
               <Legend />
               <Bar dataKey="importance" fill={colorPalette[4]} name="Importance" />
             </BarChart>
