@@ -32,7 +32,7 @@ function MemberCarousel(props?: { id: string, sx?: SxProps }) {
       firstName: "Salman",
       lastName: "Chowdhury",
       leadership: ["Team Member"],
-      imagePath: "/salmanchowdhury.jpeg"
+      imagePath: "/salmanchowdhury.png"
     }
   ];
 

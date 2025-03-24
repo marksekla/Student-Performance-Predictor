@@ -1,41 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, LinearProgress, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import SponsorshipCard from "../components/SponsorshipCard";
 
-export default function WebQuestionnaire() {
-  const navigate = useNavigate();
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, any>>({});
-  const [selectedOption, setSelectedOption] = useState<string | number | null>(null);
-  const [textInput, setTextInput] = useState("");
-  const [rangeValue, setRangeValue] = useState<number>(5);
 
-  useEffect(() => {
-    document.body.style.margin = "0";
-    // Remove the overflow: hidden that was preventing scrolling
-    document.body.style.overflow = "auto";
+// Define the question type
+interface Question {
+    id: number;
+    text: string;
+    type: "number" | "selection";
+    options?: Array<{label: string, value: string | number}>;
+    inputProps?: Record<string, string>;
+    key: string;
+}
 
-    // Reset selections when changing questions
-    setSelectedOption(null);
-    setTextInput("");
-    setRangeValue(5);
-
-    // Load previous answer if exists
-    const savedAnswer = answers[questions[currentQuestionIndex].id];
-    if (savedAnswer !== undefined) {
-      if (questions[currentQuestionIndex].type === "multiple") {
-        setSelectedOption(savedAnswer);
-      } else if (questions[currentQuestionIndex].type === "text") {
-        setTextInput(savedAnswer);
-      } else if (questions[currentQuestionIndex].type === "range") {
-        setRangeValue(savedAnswer);
-      }
-    }
-  }, [currentQuestionIndex]);
-
-  // List of questions for the questionnaire
-  const questions: Question[] = [
+// List of questions for the questionnaire
+const questions: Question[] = [
     {
         id: 1,
         text: 'How many hours do you study per week?',
@@ -199,255 +178,291 @@ export default function WebQuestionnaire() {
         ],
         key: 'parentalEducationLevel'
     }
-  ];
+];
 
-  // Define the question type
-  interface Question {
-    id: number;
-    text: string;
-    type: "multiple" | "text" | "range";
-    options?: string[];
-    min?: number;
-    max?: number;
-  }
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+export default function WebQuestionnaire() {
+    const navigate = useNavigate();
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [answers, setAnswers] = useState<Record<number, any>>({});
+    const [selectedOption, setSelectedOption] = useState<string | number | null>(null);
+    const [numValue, setNumValue] = useState<number>(5);
 
-  const handleNext = () => {
-    // Save the current answer
-    if (currentQuestion.type === "multiple" && selectedOption !== null) {
-      setAnswers({ ...answers, [currentQuestion.id]: selectedOption });
-    } else if (currentQuestion.type === "text" && textInput) {
-      setAnswers({ ...answers, [currentQuestion.id]: textInput });
-    } else if (currentQuestion.type === "range") {
-      setAnswers({ ...answers, [currentQuestion.id]: rangeValue });
-    }
-
-    // Check if it's the last question
-    if (currentQuestionIndex === questions.length - 1) {
-      // Handle questionnaire completion
-      console.log("Questionnaire completed", answers);
-      // You can submit the answers to your backend here
-      // For now, we'll just navigate back to the landing page
-      alert("Thank you for completing the questionnaire!");
-      navigate("/");
-    } else {
-      // Move to the next question
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
-
-  const isNextDisabled = () => {
-    if (currentQuestion.type === "multiple" && selectedOption === null) return true;
-    if (currentQuestion.type === "text" && !textInput.trim()) return true;
-    return false;
-  };
-
-  // Light blue color for buttons and progress bar
-  const lightBlue = "#64B5F6";
-
-  return (
-    <Box
-      sx={{
-        minHeight: "100vh", // Changed from height to minHeight to allow scrolling
-        width: "100vw",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        background: "#14213D", // Changed to solid color as requested
-        position: "relative",
-        paddingTop: "30px", // Add padding to account for the navigation bar
-        paddingBottom: "40px", // Add bottom padding for better spacing
-        overflow: "visible", // Allow content to overflow for scrolling
-      }}
-    >
-
-      {/* Progress Bar */}
-      <Box sx={{ width: "70%", marginBottom: "20px" }}>
-        <LinearProgress
-          variant="determinate"
-          value={progress}
-          sx={{
-            height: 10,
-            borderRadius: 5,
-            backgroundColor: "rgba(255, 255, 255, 0.2)",
-            '& .MuiLinearProgress-bar': {
-              backgroundColor: lightBlue, // Changed to light blue
+    
+    useEffect(() => {
+        document.body.style.margin = "0";
+        // Remove the overflow: hidden that was preventing scrolling
+        document.body.style.overflow = "auto";
+        
+        // Reset selections when changing questions
+        setSelectedOption(null);
+        setNumValue(5);
+        
+        // Load previous answer if exists
+        const savedAnswer = answers[questions[currentQuestionIndex].id];
+        
+        if (savedAnswer !== undefined) {
+            if (questions[currentQuestionIndex].type === "selection") {
+                setSelectedOption(savedAnswer);
+            } else if (questions[currentQuestionIndex].type === "number") {
+                setNumValue(savedAnswer);
             }
-          }}
-        />
-        <Typography variant="body2" sx={{ color: "white", textAlign: "right", mt: 1 }}>
-          Question {currentQuestionIndex + 1} of {questions.length}
-        </Typography>
-      </Box>
-
-      {/* Questionnaire Box */}
-      <Box
-        sx={{
-          width: "70%",
-          maxWidth: "800px",
-          minHeight: "400px",
-          background: "rgba(255, 255, 255, 0.1)",
-          borderRadius: "15px",
-          backdropFilter: "blur(10px)",
-          padding: "40px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
-          marginBottom: "40px", // Add margin to create space at bottom
-        }}
-      >
-        {/* Question */}
-        <Typography sx={{ color: "white", fontSize: "1.8rem", fontWeight: "500", mb: 4 }}>
-          {currentQuestion.text}
-        </Typography>
-
-        {/* Answer options based on question type */}
-        <Box sx={{ mb: 4 }}>
-          {currentQuestion.type === "multiple" && (
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {currentQuestion.options?.map((option) => (
-                <Button
-                  key={option}
-                  variant={selectedOption === option ? "contained" : "outlined"}
-                  onClick={() => setSelectedOption(option)}
-                  sx={{
-                    color: "white",
-                    borderColor: "rgba(255, 255, 255, 0.5)",
-                    backgroundColor: selectedOption === option ? lightBlue : "transparent", // Changed to light blue for selected
-                    justifyContent: "flex-start",
-                    padding: "12px 20px",
-                    textTransform: "none",
-                    fontSize: "1rem",
-                    '&:hover': {
-                      backgroundColor: selectedOption === option ? lightBlue : "rgba(255, 255, 255, 0.1)",
-                      borderColor: "white"
-                    }
-                  }}
-                >
-                  {option}
-                </Button>
-              ))}
-            </Box>
-          )}
-
-          {currentQuestion.type === "text" && (
-            <Box
-              component="textarea"
-              value={textInput}
-              onChange={(e) => setTextInput(e.target.value)}
-              sx={{
-                width: "100%",
-                minHeight: "120px",
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                color: "white",
-                border: "1px solid rgba(255, 255, 255, 0.3)",
-                borderRadius: "8px",
-                padding: "15px",
-                fontSize: "1rem",
-                fontFamily: "inherit",
-                resize: "vertical",
-                '&:focus': {
-                  outline: "none",
-                  borderColor: lightBlue, // Changed to light blue
+        }
+    }, [currentQuestionIndex]);
+    
+    
+    const currentQuestion = questions[currentQuestionIndex];
+    const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+    
+    const handleNext = async () => {
+        // Create updated answers first
+        let updatedAnswers = { ...answers };
+        
+        // Then add the current answer to local copy
+        if (currentQuestion.type === "selection" && selectedOption !== null) {
+            updatedAnswers = {
+                ...updatedAnswers,
+                [currentQuestion.id]: selectedOption
+            };
+        } else if (currentQuestion.type === "number") {
+            updatedAnswers = {
+                ...updatedAnswers,
+                [currentQuestion.id]: numValue
+            };
+        }
+        
+        // Update the state
+        setAnswers(updatedAnswers);
+        
+        // Check if it's the last question
+        if (currentQuestionIndex === questions.length - 1) {
+            // Create payload from the updatedAnswers (not from the state)
+            const payload: Record<string, any> = {};
+            
+            // Build the payload using the question keys for proper mapping
+            questions.forEach(question => {
+                const answer = updatedAnswers[question.id]; // Use updatedAnswers instead of answers
+                if (answer !== undefined) {
+                    payload[question.key] = question.type === 'number' ? parseFloat(answer) : answer;
                 }
-              }}
-              placeholder="Type your answer here..."
-            />
-          )}
-
-          {currentQuestion.type === "range" && (
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  color: "white"
-                }}
-              >
-                <Typography>{currentQuestion.min}</Typography>
-                <Typography>{currentQuestion.max}</Typography>
-              </Box>
-
-              <Box sx={{ width: "100%", display: "flex", alignItems: "center", gap: 2 }}>
-                <input
-                  type="range"
-                  min={currentQuestion.min}
-                  max={currentQuestion.max}
-                  value={rangeValue}
-                  onChange={(e) => setRangeValue(parseInt(e.target.value))}
-                  style={{
-                    width: "100%",
-                    height: "8px",
-                    appearance: "none",
-                    backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    borderRadius: "4px",
-                    outline: "none",
-                  }}
+            });
+            
+            console.log("Sending payload to backend:", payload);
+            
+            try {
+                const response = await fetch('http://localhost:5000/predict_linear_regression', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    console.log("Prediction result:", data.prediction);
+                    
+                    navigate("/results", { 
+                        state: { 
+                            userInputs: payload, 
+                            predictionResult: data.prediction 
+                        } 
+                    });
+                } else {
+                    console.error('Prediction Error:', data.error);
+                    alert("Error getting prediction. Please try again.");
+                }
+            } catch (error) {
+                console.error('Error fetching prediction:', error);
+                alert("Error connecting to the server. Please try again later.");
+            }
+        } else {
+            // Move to the next question
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+        }
+    };
+    
+    const handlePrevious = () => {
+        if (currentQuestionIndex > 0) {
+            setCurrentQuestionIndex(currentQuestionIndex - 1);
+        }
+    };
+    
+    const isNextDisabled = () => {
+        if (currentQuestion.type === "selection" && selectedOption === null) return true;
+        return false;
+    };
+    
+    // Light blue color for buttons and progress bar
+    const lightBlue = "#64B5F6";
+    
+    return (
+        <Box
+            sx={{
+                minHeight: "100vh", // Changed from height to minHeight to allow scrolling
+                width: "100vw",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+                background: "#14213D", // Changed to solid color as requested
+                position: "relative",
+                paddingTop: "30px", // Add padding to account for the navigation bar
+                paddingBottom: "40px", // Add bottom padding for better spacing
+                overflow: "visible", // Allow content to overflow for scrolling
+            }}
+        >
+        
+            {/* Progress Bar */}
+            <Box sx={{ width: "70%", marginBottom: "20px" }}>
+                <LinearProgress
+                    variant="determinate"
+                    value={progress}
+                    sx={{
+                        height: 10,
+                        borderRadius: 5,
+                        backgroundColor: "rgba(255, 255, 255, 0.2)",
+                        '& .MuiLinearProgress-bar': {
+                            backgroundColor: lightBlue, // Changed to light blue
+                        }
+                    }}
                 />
-              </Box>
 
-              <Typography sx={{ color: "white", fontSize: "1.5rem", fontWeight: "bold" }}>
-                {rangeValue}
-              </Typography>
+                <Typography variant="body2" sx={{ color: "white", textAlign: "right", mt: 1 }}>
+                    Question {currentQuestionIndex + 1} of {questions.length}
+                </Typography>
             </Box>
-          )}
-        </Box>
+            
 
-        {/* Navigation Buttons */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-          <Button
-            onClick={handlePrevious}
-            disabled={currentQuestionIndex === 0}
-            sx={{
-              color: "white",
-              borderColor: "rgba(255, 255, 255, 0.5)",
-              textTransform: "none",
-              fontSize: "1rem",
-              opacity: currentQuestionIndex === 0 ? 0.5 : 1,
-              '&:hover': {
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                borderColor: "white"
-              }
-            }}
-          >
-            Previous
-          </Button>
+            {/* Questionnaire Box */}
+            <Box
+                sx={{
+                    width: "70%",
+                    maxWidth: "800px",
+                    minHeight: "400px",
+                    background: "rgba(255, 255, 255, 0.1)",
+                    borderRadius: "15px",
+                    backdropFilter: "blur(10px)",
+                    padding: "40px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                    marginBottom: "40px"
+                }}
+            >
+                {/* Question */}
+                <Typography sx={{ color: "white", fontSize: "1.8rem", fontWeight: "500", mb: 4 }}>
+                    {currentQuestion.text}
+                </Typography>
+                
+                {/* Answer options based on question type */}
+                <Box sx={{ mb: 4 }}>
+                    {currentQuestion.type === "selection" && (
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                            {currentQuestion.options?.map((option) => (
+                                <Button
+                                    key={option.value.toString()}
+                                    variant={selectedOption === option.value ? "contained" : "outlined"}
+                                    onClick={() => setSelectedOption(option.value)}
+                                    sx={{
+                                        color: "white",
+                                        borderColor: "rgba(255, 255, 255, 0.5)",
+                                        backgroundColor: selectedOption === option.value ? lightBlue : "transparent",
+                                        justifyContent: "flex-start",
+                                        padding: "12px 20px",
+                                        textTransform: "none",
+                                        fontSize: "1rem",
+                                        '&:hover': {
+                                            backgroundColor: selectedOption === option.value ? lightBlue : "rgba(255, 255, 255, 0.1)",
+                                            borderColor: "white"
+                                        }
+                                    }}
+                                >
+                                    {option.label}
+                                </Button>
+                            ))}
+                        </Box>
+                    )}
 
-          <Button
-            onClick={handleNext}
-            disabled={isNextDisabled()}
-            sx={{
-              backgroundColor: lightBlue, // Changed to light blue
-              color: "#14213D", // Changed to dark color for contrast
-              textTransform: "none",
-              fontSize: "1rem",
-              padding: "8px 24px",
-              borderRadius: "20px",
-              fontWeight: "bold", // Added for better contrast
-              '&:hover': {
-                backgroundColor: "#90CAF9", // Lighter blue on hover
-              },
-              '&:disabled': {
-                backgroundColor: "rgba(100, 181, 246, 0.5)", // Lighter version of light blue
-                color: "rgba(20, 33, 61, 0.5)" // Darker text with reduced opacity
-              }
-            }}
-          >
-            {currentQuestionIndex === questions.length - 1 ? "Submit" : "Next"}
-          </Button>
+
+                    {currentQuestion.type === "number" && (
+                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+                            <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between", color: "white" }}>
+                                <Typography>{currentQuestion.inputProps?.min || 0}</Typography>
+                                <Typography>{currentQuestion.inputProps?.max || 100}</Typography>
+                            </Box>
+                            
+                            <Box sx={{ width: "100%", display: "flex", alignItems: "center", gap: 2 }}>
+                                <input
+                                    type="range"
+                                    min={currentQuestion.inputProps?.min || 0}
+                                    max={currentQuestion.inputProps?.max || 100}
+                                    step={currentQuestion.inputProps?.step || 1}
+                                    value={numValue}
+                                    onChange={(e) => setNumValue(parseFloat(e.target.value))}
+                                    style={{
+                                        width: "100%",
+                                        height: "8px",
+                                        appearance: "none",
+                                        backgroundColor: "rgba(255, 255, 255, 0.2)",
+                                        borderRadius: "4px",
+                                        outline: "none",
+                                    }}
+                                />
+                            </Box>
+                            
+                            <Typography sx={{ color: "white", fontSize: "1.5rem", fontWeight: "bold" }}>
+                                {numValue}
+                            </Typography>
+                        </Box>
+                    )}
+                </Box>
+                
+
+                {/* Navigation Buttons */}
+                <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+                    <Button
+                        onClick={handlePrevious}
+                        disabled={currentQuestionIndex === 0}
+                        sx={{
+                            color: "white",
+                            borderColor: "rgba(255, 255, 255, 0.5)",
+                            textTransform: "none",
+                            fontSize: "1rem",
+                            opacity: currentQuestionIndex === 0 ? 0.5 : 1,
+                            '&:hover': {
+                                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                borderColor: "white"
+                            }
+                        }}
+                        >
+                        Previous
+                    </Button>
+                    
+                    <Button
+                        onClick={handleNext}
+                        disabled={isNextDisabled()}
+                        sx={{
+                            backgroundColor: lightBlue, // Changed to light blue
+                            color: "#14213D", // Changed to dark color for contrast
+                            textTransform: "none",
+                            fontSize: "1rem",
+                            padding: "8px 24px",
+                            borderRadius: "20px",
+                            fontWeight: "bold", // Added for better contrast
+                            '&:hover': {
+                                backgroundColor: "#90CAF9", // Lighter blue on hover
+                            },
+                            '&:disabled': {
+                                backgroundColor: "rgba(100, 181, 246, 0.5)", // Lighter version of light blue
+                                color: "rgba(20, 33, 61, 0.5)" // Darker text with reduced opacity
+                            }
+                        }}
+                        >
+                        {currentQuestionIndex === questions.length - 1 ? "Submit" : "Next"}
+                    </Button>
+                </Box>
+            </Box>
         </Box>
-      </Box>
-    </Box>
-  );
+    );
 }
