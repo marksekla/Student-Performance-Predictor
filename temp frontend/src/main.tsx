@@ -12,6 +12,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import RF_WebQuestionnaire from "./integrals/RF_WebQuestionnaire.tsx";
 import LR_WebQuestionnaire from "./integrals/LR_WebQuestionnaire.tsx";
 import ModelChoicePage from "./integrals/ModelChoice.tsx";
+import ResultsPage from "./integrals/RFResults.tsx";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="tier/:tier" element={<WebTierPage />} />
           <Route path="/random-forest" element={<RF_WebQuestionnaire />} />
           <Route path="/linear-regression" element={<LR_WebQuestionnaire />} />
+          <Route path="/rf-results" element={<ResultsPage />} />
           </Route>
         </Routes>
       </ThemeProvider>

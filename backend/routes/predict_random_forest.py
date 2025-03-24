@@ -23,6 +23,7 @@ predicted_grade_map = {0.0 : "A",
 
 from flask import Blueprint, request, jsonify
 import pandas as pd
+import json
 
 # backend.models is referring to models.py, NOT models/ folder
 # random_forest_pipeline is the variable inside of models.py, NOT the pickle file
@@ -37,42 +38,39 @@ predict_random_forest_bp = Blueprint('predict_random_forest', __name__)
 @predict_random_forest_bp.route('/predict_random_forest', methods=['POST'])
 def predict_random_forest():
     try:
-        # Get JSON data
-        data = request.get_json()
+        data = request.get_json(force=True)
 
         # Convert booleans (True/False) to integers (1/0)
-        data['Tutoring']          = 1 if data.get('Tutoring', False) else 0
-        data['ParentalSupport']   = 1 if data.get('ParentalSupport', False) else 0
-        data['Extracurricular']   = 1 if data.get('Extracurricular', False) else 0
-        data['Sports']            = 1 if data.get('Sports', False) else 0
-        data['Music']             = 1 if data.get('Music', False) else 0
-        data['Volunteering']      = 1 if data.get('Volunteering', False) else 0
+        data['Tutoring']        = 1 if data.get('Tutoring', False) else 0
+        data['ParentalSupport'] = 1 if data.get('ParentalSupport', False) else 0
+        data['Extracurricular'] = 1 if data.get('Extracurricular', False) else 0
+        data['Sports']          = 1 if data.get('Sports', False) else 0
+        data['Music']           = 1 if data.get('Music', False) else 0
+        data['Volunteering']    = 1 if data.get('Volunteering', False) else 0
 
-        # Convert strings to numeric codes using the dictionaries above
-        data['Gender']            = gender_map.get(data.get('Gender', ''), 0)
-        data['Ethnicity']         = ethnicity_map.get(data.get('Ethnicity', 'Other'), 3)  # Default to 'Other'
-        data['ParentalEducation'] = education_map.get(data.get('ParentalEducation', ''), 0)
-        data['ParentalSupport']   = parentalSupport_map.get(data.get('ParentalSupport', ''), 0)
-
-        # Convert JSON to DataFrame
+        # Convert to DataFrame
         input_data = pd.DataFrame([data])
 
-        # Ensure `random_forest_pipeline` is defined
+        # Make prediction
         prediction = random_forest_pipeline.predict(input_data)
 
-        feature_importance = random_forest_pipeline.feature_importance_data
+        # Convert feature importances to serializable format
+        feature_importance_raw = random_forest_pipeline.feature_importance_data
+        feature_importance = pd.DataFrame(feature_importance_raw).to_dict(orient="records") \
+            if isinstance(feature_importance_raw, pd.DataFrame) else feature_importance_raw
 
-        print("Loaded feature importance data:", getattr(random_forest_pipeline, 'feature_importance_data', None))
 
-        return jsonify({
-            'success': True,
-            'prediction': float(prediction[0]),
-            'featureImportance': random_forest_pipeline.feature_importance_data,
-            'model': 'Random Forest'
-        })
+        result = {
+            "success": True,
+            "prediction": float(prediction[0]),
+            "featureImportance": feature_importance,
+            "model": "Random Forest"
+        }
+
+        return jsonify(result)
 
     except Exception as e:
         return jsonify({
-            'success': False,
-            'error': str(e)
+            "success": False,
+            "error": str(e)
         }), 400

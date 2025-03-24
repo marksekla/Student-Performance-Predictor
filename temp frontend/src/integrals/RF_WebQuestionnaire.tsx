@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, LinearProgress, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import SponsorshipCard from "../components/SponsorshipCard";
+import RandomForestDashboard from "../components/RandomForestDashboard/RandomForestDashboard";
 
 export default function WebQuestionnaire() {
   const navigate = useNavigate();
@@ -10,6 +10,9 @@ export default function WebQuestionnaire() {
   const [selectedOption, setSelectedOption] = useState<string | number | null>(null);
   const [textInput, setTextInput] = useState("");
   const [rangeValue, setRangeValue] = useState<number>(0);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [predictionResult, setPredictionResult] = useState(null);
+  const [userInput, setUserInput] = useState({});
 
   useEffect(() => {
     document.body.style.margin = "0";
@@ -32,7 +35,7 @@ export default function WebQuestionnaire() {
 
   const questions = [
     { id: 1, text: 'What is your age?', type: 'number', min: 15, max: 25, inputProps: { step: '1'} },
-    { id: 2, text: 'What is your Gender?', type: 'selection', subtype: 'button-image', options: [ { label: 'Male', value: 0, image: 'male.png' }, { label: 'Female', value: 1, image: 'female.png' } ] },
+    { id: 2, text: 'What is your Gender?', type: 'selection', subtype: 'button-image', options: [ { label: 'Male', value: 0}, { label: 'Female', value: 1} ] },
     { id: 3, text: 'What is your Ethnicity?', type: 'selection', options: [ { label: 'Caucasian', value: 0 }, { label: 'African American', value: 1 }, { label: 'Asian', value: 2 }, { label: 'Other', value: 3 } ] },
     { id: 4, text: "What education did your parents complete?", type: 'selection', options: [ { label: 'None', value: 0 }, { label: 'High School', value: 1 }, { label: 'Some College', value: 2 }, { label: "Bachelor's", value: 3 }, { label: 'Higher', value: 4 } ] },
     { id: 5, text: 'How many hours do you study per week?', type: 'number', min: 0, max: 20, inputProps: { step: '1' } },
@@ -46,25 +49,74 @@ export default function WebQuestionnaire() {
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
   const handleNext = () => {
-    if (currentQuestion.type === "selection" && selectedOption !== null) {
-      setAnswers({ ...answers, [currentQuestion.id]: selectedOption });
-    }  else if (currentQuestion.type === "range" || currentQuestion.type === "number") {
-      const valueToSave = currentQuestion.inputProps?.step === "0.01"
-        ? parseFloat(rangeValue.toFixed(2))
-        : rangeValue;
-      setAnswers({ ...answers, [currentQuestion.id]: valueToSave });
-    } else if (currentQuestion.type === "multi") {
-      setAnswers({ ...answers, [currentQuestion.id]: selectedOption });
+  let updatedAnswers = { ...answers };
+
+  if (currentQuestion.type === "selection" && selectedOption !== null) {
+    updatedAnswers[currentQuestion.id] = selectedOption;
+  } else if (currentQuestion.type === "range" || currentQuestion.type === "number") {
+    const valueToSave = currentQuestion.inputProps?.step === "0.01"
+      ? parseFloat(rangeValue.toFixed(2))
+      : rangeValue;
+    updatedAnswers[currentQuestion.id] = valueToSave;
+  } else if (currentQuestion.type === "multi") {
+    const currentSelections = answers[currentQuestion.id] || [];
+    updatedAnswers[currentQuestion.id] = currentSelections;
+  }
+
+  setAnswers(updatedAnswers);
+
+  if (currentQuestionIndex === questions.length - 1) {
+    handleSubmit(updatedAnswers);
+  } else {
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+  }
+};
+
+const handleSubmit = async (finalAnswers: Record<number, any>) => {
+  const selectedPrograms = finalAnswers[8] || [];
+
+  const formattedInput = {
+    Age: finalAnswers[1],
+    Gender: finalAnswers[2],               // as string: "Male" or "Female"
+    Ethnicity: finalAnswers[3],           // as string: "Caucasian", etc.
+    ParentalEducation: finalAnswers[4],   // string, eg. "High School"
+    StudyTimeWeekly: finalAnswers[5],           // number
+    Absences: finalAnswers[6],            // number
+    ParentalSupport: finalAnswers[7],     // string: "High", etc.
+    Tutoring: selectedPrograms.includes("tutoring"),
+    Extracurricular: selectedPrograms.includes("extracurricular"),
+    Sports: selectedPrograms.includes("sports"),
+    Music: selectedPrograms.includes("music"),
+    Volunteering: selectedPrograms.includes("volunteering"),
+    GPA: finalAnswers[9]                 // number
+  };
+
+  try {
+    const response = await fetch("http://localhost:5000/predict_random_forest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(formattedInput),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
 
-    if (currentQuestionIndex === questions.length - 1) {
-      console.log("Questionnaire completed", answers);
-      alert("Thank you for completing the questionnaire!");
-      navigate("/");
-    } else {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    }
-  };
+    const result = await response.json();
+
+    navigate("/rf-results", {
+      state: {
+        userInput: formattedInput,
+        predictionResult: result
+      }
+    });
+  } catch (err: any) {
+    console.error("Fetch error:", err.message || err);
+  }
+};
 
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
@@ -131,7 +183,7 @@ export default function WebQuestionnaire() {
         <Typography sx={{ color: "white", fontSize: "1.8rem", fontWeight: "500", mb: 4 }}>
           {currentQuestion.text}
         </Typography>
-        
+
         {currentQuestion.type === "multi" && (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {currentQuestion.options?.map((option) => {
@@ -160,7 +212,7 @@ export default function WebQuestionnaire() {
                   }
                 }}
               >
-                {option.label}
+              {option.label}
               </Button>
             );
           })}
@@ -190,15 +242,6 @@ export default function WebQuestionnaire() {
               }
             }}
             >
-            {option.image && (
-              <img
-              src={option.image}
-              alt={option.label}
-              width="32"
-              height="32"
-              style={{ borderRadius: "50%" }}
-              />
-            )}
             {option.label}
             </Button>
           ))}
@@ -281,6 +324,7 @@ export default function WebQuestionnaire() {
           >
             {currentQuestionIndex === questions.length - 1 ? "Submit" : "Next"}
           </Button>
+
         </Box>
       </Box>
     </Box>
