@@ -188,6 +188,9 @@ export default function WebQuestionnaire() {
     const [selectedOption, setSelectedOption] = useState<string | number | null>(null);
     const [numValue, setNumValue] = useState<number>(5);
 
+    var currentQuestion = questions[currentQuestionIndex];
+    var progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+
     
     useEffect(() => {
         document.body.style.margin = "0";
@@ -197,22 +200,22 @@ export default function WebQuestionnaire() {
         // Reset selections when changing questions
         setSelectedOption(null);
         setNumValue(5);
+
+        currentQuestion = questions[currentQuestionIndex];
+        progress = ((currentQuestionIndex + 1) / questions.length) * 100;
         
         // Load previous answer if exists
-        const savedAnswer = answers[questions[currentQuestionIndex].id];
+        const savedAnswer = answers[currentQuestion.id];
         
         if (savedAnswer !== undefined) {
-            if (questions[currentQuestionIndex].type === "selection") {
+            if (currentQuestion.type === "selection") {
                 setSelectedOption(savedAnswer);
-            } else if (questions[currentQuestionIndex].type === "number") {
+            } else if (currentQuestion.type === "number") {
                 setNumValue(savedAnswer);
             }
         }
     }, [currentQuestionIndex]);
     
-    
-    const currentQuestion = questions[currentQuestionIndex];
-    const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
     
     const handleNext = async () => {
         // Create updated answers first

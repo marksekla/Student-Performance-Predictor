@@ -29,10 +29,10 @@ const Results = () => {
             }}
         >
             <Typography variant="h3" sx={{ mb: 4 }}>
-                Your Prediction Results
+                Your Predicted Results
             </Typography>
             
-            <Box sx={{ width: "100%", maxWidth: "1200px", display: "flex", justifyContent: "center" }}>
+            <Box sx={{ width: "100%", maxWidth: "1200px", display: "flex", justifyContent: "center", marginBottom: "16vh" }}>
                 <ChartsTest userInputs={userInputs} predictionResult={predictionResult} />
             </Box>
             
@@ -43,7 +43,6 @@ const Results = () => {
                     color: "#14213D",
                     padding: "10px 20px",
                     borderRadius: "20px",
-                    marginTop: "40px",
                     fontWeight: "bold",
                     '&:hover': {
                         backgroundColor: "#90CAF9",

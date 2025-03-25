@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import {
   BarChart,
   Bar,
@@ -9,7 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 // Define your color palette
 const colorPalette = [
@@ -96,6 +97,7 @@ const CategoricalBarChart = ({ item }: { item: any }) => {
 };
 
 const RandomForestCharts = ({ datasetStats, userInput, predictionResult }: any) => {
+  const navigate = useNavigate();
 
   // Map user inputs to text using the mapping objects
   const mappedGender = GENDER_MAP[userInput.Gender] || 'Unknown';
@@ -304,6 +306,23 @@ const RandomForestCharts = ({ datasetStats, userInput, predictionResult }: any) 
           </ResponsiveContainer>
         </Box>
       )}
+
+      <Button 
+          onClick={() => navigate('/')}
+          sx={{
+              backgroundColor: "#64B5F6",
+              color: "#14213D",
+              padding: "10px 20px",
+              borderRadius: "20px",
+              marginTop: "40px",
+              fontWeight: "bold",
+              '&:hover': {
+                  backgroundColor: "#90CAF9",
+              }
+          }}
+      >
+          Back to Home
+      </Button>
     </Box>
   );
 };

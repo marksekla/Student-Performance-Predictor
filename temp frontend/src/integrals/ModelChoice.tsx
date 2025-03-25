@@ -17,9 +17,9 @@ export default function ModelChoice() {
       description: "This questionnaire helps collect categorical and numerical inputs for a Random Forest model to predict student performance based on behavior and study habits.",
     },
     {
-      title: "Linear Regression",
+      title: "Percentage Grade",
       route: "/linear-regression",
-      description: "Use this questionnaire to gather numerical input data optimized for a Linear Regression model analyzing academic trends and productivity scores.",
+      description: "This questionnaire collects information about your study habits and academic environment to predict your exam score percentage.",
     },
   ];
 

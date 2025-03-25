@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import ExamChart from './ExamChart';
-import NumericalCharts from './NumericalCharts';
-import CategoricalCharts from './CategoricalCharts';
+import ExamChart from './specific_charts/ExamChart';
+import NumericalCharts from './specific_charts/NumericalCharts';
+import CategoricalCharts from './specific_charts/CategoricalCharts';
+import BestPerformersChart from './specific_charts/BestPerformersChart';
 
 
 const ChartsTest = ({userInputs, predictionResult}) => {
@@ -21,15 +22,19 @@ const ChartsTest = ({userInputs, predictionResult}) => {
 
     
     return (
-        <div className="p-4">
+        <div>
             <ExamChart datasetStats={datasetStats} predictionResult={predictionResult} />
 
-            <hr />
+            <hr style={{margin: '5vh 0'}}/>
 
-            <h2 className="text-lg font-bold mb-4">Your Inputs vs Dataset Distributions</h2>
+            <h2 style={{textAlign: 'center'}}>Your Inputs vs Other Students</h2>
             <NumericalCharts datasetStats={datasetStats} userInputs={userInputs} />
-            <hr />
             <CategoricalCharts datasetStats={datasetStats} userInputs={userInputs} />
+
+            <hr style={{margin: '5vh 0'}}/>
+
+            <h2 style={{textAlign: 'center'}}>Best Performing Students</h2>
+            <BestPerformersChart datasetStats={datasetStats} userInputs={userInputs} />
         </div>
     );
 };

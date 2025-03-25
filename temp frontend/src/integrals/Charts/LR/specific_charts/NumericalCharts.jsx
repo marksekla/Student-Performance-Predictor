@@ -32,11 +32,11 @@ const NumericalCharts = ({ datasetStats, userInputs }) => {
         ];
 
     return (
-        <div className="p-4">
-            <h3 className="text-lg font-bold mb-4">Numerical Features Distribution</h3>
+        <>
+            <h3 style={{ textAlign: 'center', margin: '12vh 0 4vh' }}>Numerical Features</h3>
             <div style={{ width: '80vw', height: '50vh' }}>
                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={numericalData} barGap={1}>
+                    <BarChart data={numericalData} barGap={0}>
                         <XAxis dataKey="name" />
                         <YAxis />
                         <Tooltip />
@@ -46,7 +46,7 @@ const NumericalCharts = ({ datasetStats, userInputs }) => {
                     </BarChart>
                 </ResponsiveContainer>
             </div>
-        </div>
+        </>
     );
 
 }

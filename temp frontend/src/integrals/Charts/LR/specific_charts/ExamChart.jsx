@@ -50,9 +50,9 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
     }];
     
     return (
-        <div className="p-4">
-            <h2 className="text-xl font-bold mb-2">Your Predicted Score: {userScore.toFixed(1)}%</h2>
-            <p className="mb-4">Grade: <span className="font-bold" style={{color: userGradeDict?.fill}}>{userGradeDict?.grade}</span></p>
+        <>
+            <h2>Your Predicted Score: {userScore.toFixed(1)}%</h2>
+            <p>Grade: <span style={{color: userGradeDict?.fill}}>{userGradeDict?.grade}</span></p>
             
             <div style={{ width: '80vw', height: '50vh' }}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -156,13 +156,13 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
                 </ResponsiveContainer>
             </div>
             
-            <div className="mt-4 p-4 bg-gray-100 rounded">
-                <h3 className="font-bold mb-2">What This Means:</h3>
-                <p>Your predicted score of <span className="font-bold">{userScore.toFixed(1)}%</span> falls in the <span className="font-bold">{getUserPercentile()}</span> of all students.</p>
-                <p className="mt-2">This score corresponds to a grade of <span className="font-bold" style={{color: userGradeDict?.fill}}>{userGradeDict?.grade}</span>.</p>
-                <p className="mt-2">The class average is <span className="font-bold">{avgScore.toFixed(1)}%</span>.</p>
+            <div>
+                <h3>What This Means:</h3>
+                <p>Your predicted score of <span>{userScore.toFixed(1)}%</span> falls in the <span>{getUserPercentile()}</span> of all students.</p>
+                <p>This score corresponds to a grade of <span style={{color: userGradeDict?.fill}}>{userGradeDict?.grade}</span>.</p>
+                <p>The class average is <span>{avgScore.toFixed(1)}%</span>.</p>
             </div>
-        </div>
+        </>
     );
 };
 

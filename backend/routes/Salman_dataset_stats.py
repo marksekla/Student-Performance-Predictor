@@ -11,7 +11,7 @@ def dataset_stats():
     # Get actual distribution of exam scores
     score_counts = df['Exam_Score'].value_counts().sort_index()
     score_percentages = (score_counts / len(df) * 100).to_dict()
-
+    
     stats = {
         # Numerical averages
         'hours_studied_avg': df['Hours_Studied'].mean(),
@@ -44,5 +44,53 @@ def dataset_stats():
             '90': df['Exam_Score'].quantile(0.90)
         }
     }
+
+    
+    ###########################    For BestPerformersChart.jsx     #################################
+
+    # For categorical variables, you might need to assign numerical scores
+    # Example: High=3, Medium=2, Low=1 for ordered categories
+    categorical_mapping = {
+        'Extracurricular_Activities': {'Yes': 2, 'No': 1},
+        'Internet_Access': {'Yes': 2, 'No': 1},
+        'Learning_Disabilities': {'Yes': 2, 'No': 1},
+        'Gender': {'Male': 2, 'Female': 1},
+        'Parental_Involvement': {'High': 3, 'Medium': 2, 'Low': 1},
+        'Access_to_Resources': {'High': 3, 'Medium': 2, 'Low': 1},
+        'Motivation_Level': {'High': 3, 'Medium': 2, 'Low': 1},
+        'Family_Income': {'High': 3, 'Medium': 2, 'Low': 1},
+        'Teacher_Quality': {'High': 3, 'Medium': 2, 'Low': 1},
+        'Peer_Influence': {'Positive': 3, 'Neutral': 2, 'Negative': 1},
+        'Parental_Education_Level': {'Postgraduate': 3, 'College': 2, 'High School': 1},
+    }
+
+    # First, create all the score columns
+    for category, mapping in categorical_mapping.items():
+        df[f'{category}_cat'] = df[category].map(mapping)
+
+    # THEN filter to get top students (e.g., top 10%)
+    top_percentile = 90
+    top_students = df[df['Exam_Score'] >= df['Exam_Score'].quantile(top_percentile/100)]
+
+    # Calculate top student numerical averages
+    stats['top_students_avg'] = {
+        'hours_studied': float(top_students['Hours_Studied'].mean()),
+        'attendance': float(top_students['Attendance'].mean()),
+        'previous_scores': float(top_students['Previous_Scores'].mean()),
+        'tutoring_sessions': float(top_students['Tutoring_Sessions'].mean()),
+        'physical_activity': float(top_students['Physical_Activity'].mean())
+    }
+
+    # Calculate top student categorical averages
+    stats['top_students_categorical'] = {}
+    stats['avg_categorical'] = {}
+
+    for category, mapping in categorical_mapping.items():
+        score_column = f'{category}_cat'
+        
+        # Calculate averages
+        stats['top_students_categorical'][f'{category.lower()}'] = float(top_students[score_column].mean())
+        stats['avg_categorical'][f'{category.lower()}'] = float(df[score_column].mean())
+
     
     return jsonify(stats)
