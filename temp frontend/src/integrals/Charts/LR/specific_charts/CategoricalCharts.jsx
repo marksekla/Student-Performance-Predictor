@@ -85,12 +85,20 @@ const CategoricalCharts = ({ datasetStats, userInputs }) => {
         
         return (
             <div style={{ 
-                backgroundColor: 'white', 
-                padding: '10px', 
-                border: '1px solid #ccc',
-                borderRadius: '5px'
+                backgroundColor: '#222',
+                border: '1px solid #444',
+                borderRadius: '4px',
+                padding: '10px'
             }}>
-                <p style={{ margin: 0, fontWeight: 'bold' }}>Distribution:</p>
+                <p style={{ 
+                    margin: '0 0 1.4vh',  
+                    color: 'white', 
+                    fontWeight: 'bold', 
+                    textAlign: 'center' 
+                }}>
+                    Distribution
+                </p>
+                
                 {payload[0].payload.allData.map((item, index) => (
                     <p key={index} style={{ margin: '5px 0' }}>
                         <span style={{ 
@@ -120,8 +128,8 @@ const CategoricalCharts = ({ datasetStats, userInputs }) => {
                 <h4 style={{ textAlign: 'center', marginBottom: '10px' }}>{title}</h4>
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={enhancedData} margin={{ top: 10, right: 10, left: 10, bottom: 25 }}>
-                        <XAxis dataKey="category" />
-                        <YAxis label={{ value: '%', angle: -90, position: 'insideLeft' }} />
+                        <XAxis dataKey="category" tick={{ fill: '#b2b5b8' }} />
+                        <YAxis label={{ value: '%', angle: -90, position: 'insideLeft', fill: '#b2b5b8' }} tick={{ fill: '#b2b5b8' }} />
                         <Tooltip content={<CustomTooltip />} />
                         <Legend 
                             payload={[

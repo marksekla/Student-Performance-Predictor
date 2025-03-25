@@ -25,15 +25,15 @@ const ChartsTest = ({userInputs, predictionResult}) => {
         <div>
             <ExamChart datasetStats={datasetStats} predictionResult={predictionResult} />
 
-            <hr style={{margin: '5vh 0'}}/>
+            <hr style={{margin: '5vh 0' }}/>
 
             <h2 style={{textAlign: 'center'}}>Your Inputs vs Other Students</h2>
             <NumericalCharts datasetStats={datasetStats} userInputs={userInputs} />
             <CategoricalCharts datasetStats={datasetStats} userInputs={userInputs} />
 
-            <hr style={{margin: '5vh 0'}}/>
+            <hr style={{margin: '7vh 0' }}/>
 
-            <h2 style={{textAlign: 'center'}}>Best Performing Students</h2>
+            <h2 style={{textAlign: 'center'}}>Patterns of Best Performing Students</h2>
             <BestPerformersChart datasetStats={datasetStats} userInputs={userInputs} />
         </div>
     );

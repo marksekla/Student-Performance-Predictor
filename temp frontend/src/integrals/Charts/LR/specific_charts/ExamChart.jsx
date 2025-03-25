@@ -66,6 +66,7 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
                         <XAxis 
                             type="number" 
                             domain={[0, 100]} 
+                            tick={{ fill: '#b2b5b8' }}
                             label={{ 
                                 value: "Exam Score (%)", 
                                 position: 'insideBottom',
@@ -77,12 +78,40 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
                             }} 
                         />
                         <YAxis type="category" dataKey="name" hide />
+                        
                         <Tooltip 
-                            formatter={(value, name) => {
-                                // Find the range for this grade
-                                const range = gradeRanges.find(r => r.grade === name);
-                                // Return formatted string: "F: 0-50"
-                                return [range ? `${range.min}-${range.max}` : value, name];
+                            content={({ active, payload, label }) => {
+                                if (!active || !payload || !payload.length) return null;
+                                
+                                return (
+                                    <div style={{ 
+                                        backgroundColor: '#222',
+                                        border: '1px solid #444',
+                                        borderRadius: '4px',
+                                        padding: '10px'
+                                    }}>
+                                        <p style={{ 
+                                            margin: '0 0 1.4vh', 
+                                            color: 'white',
+                                            fontWeight: 'bold' ,
+                                            textAlign: 'center'
+                                        }}>
+                                            {label}
+                                        </p>
+
+                                        {payload.map((entry, index) => {
+                                            const range = gradeRanges.find(r => r.grade === entry.name);
+                                            return (
+                                                <p key={index} style={{ 
+                                                    margin: '5px 0 0',
+                                                    color: range?.fill || 'white'
+                                                }}>
+                                                    {entry.name}: {range ? `${range.min}-${range.max}` : entry.value}
+                                                </p>
+                                            );
+                                        })}
+                                    </div>
+                                );
                             }}
                         />
                         
@@ -108,14 +137,14 @@ const ExamChart = ({ datasetStats, predictionResult }) => {
                             <ReferenceLine
                                 key={index}
                                 x={item.score}
-                                stroke="#000"
+                                stroke="#fff"
                                 strokeWidth={1}
                                 isFront={true}
                                 label={{
                                     value: `${item.name} Percentile`,
                                     position: index % 2 === 0 ? 'top' : 'bottom',
                                     offset: 10,
-                                    fill: '#000',
+                                    fill: '#fff',
                                     fontSize: 12
                                 }}
                             />

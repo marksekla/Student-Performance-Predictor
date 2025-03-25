@@ -86,11 +86,11 @@ def dataset_stats():
     stats['avg_categorical'] = {}
 
     for category, mapping in categorical_mapping.items():
-        score_column = f'{category}_cat'
+        mapped_cat_column = f'{category}_cat'
         
         # Calculate averages
-        stats['top_students_categorical'][f'{category.lower()}'] = float(top_students[score_column].mean())
-        stats['avg_categorical'][f'{category.lower()}'] = float(df[score_column].mean())
+        stats['top_students_categorical'][f'{category.lower()}'] = float(top_students[mapped_cat_column].mean())
+        stats['avg_categorical'][f'{category.lower()}'] = float(df[mapped_cat_column].mean())
 
     
     return jsonify(stats)
