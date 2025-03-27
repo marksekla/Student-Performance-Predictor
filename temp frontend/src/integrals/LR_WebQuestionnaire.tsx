@@ -191,22 +191,22 @@ export default function WebQuestionnaire() {
     var currentQuestion = questions[currentQuestionIndex];
     var progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
-    
+
     useEffect(() => {
         document.body.style.margin = "0";
         // Remove the overflow: hidden that was preventing scrolling
         document.body.style.overflow = "auto";
-        
+
         // Reset selections when changing questions
         setSelectedOption(null);
         setNumValue(5);
 
         currentQuestion = questions[currentQuestionIndex];
         progress = ((currentQuestionIndex + 1) / questions.length) * 100;
-        
+
         // Load previous answer if exists
         const savedAnswer = answers[currentQuestion.id];
-        
+
         if (savedAnswer !== undefined) {
             if (currentQuestion.type === "selection") {
                 setSelectedOption(savedAnswer);
@@ -215,12 +215,12 @@ export default function WebQuestionnaire() {
             }
         }
     }, [currentQuestionIndex]);
-    
-    
+
+
     const handleNext = async () => {
         // Create updated answers first
         let updatedAnswers = { ...answers };
-        
+
         // Then add the current answer to local copy
         if (currentQuestion.type === "selection" && selectedOption !== null) {
             updatedAnswers = {
@@ -233,15 +233,15 @@ export default function WebQuestionnaire() {
                 [currentQuestion.id]: numValue
             };
         }
-        
+
         // Update the state
         setAnswers(updatedAnswers);
-        
+
         // Check if it's the last question
         if (currentQuestionIndex === questions.length - 1) {
             // Create payload from the updatedAnswers (not from the state)
             const payload: Record<string, any> = {};
-            
+
             // Build the payload using the question keys for proper mapping
             questions.forEach(question => {
                 const answer = updatedAnswers[question.id]; // Use updatedAnswers instead of answers
@@ -249,26 +249,26 @@ export default function WebQuestionnaire() {
                     payload[question.key] = question.type === 'number' ? parseFloat(answer) : answer;
                 }
             });
-            
+
             console.log("Sending payload to backend:", payload);
-            
+
             try {
                 const response = await fetch('http://localhost:5000/predict_linear_regression', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     console.log("Prediction result:", data.prediction);
-                    
-                    navigate("/results", { 
-                        state: { 
-                            userInputs: payload, 
-                            predictionResult: data.prediction 
-                        } 
+
+                    navigate("/results", {
+                        state: {
+                            userInputs: payload,
+                            predictionResult: data.prediction
+                        }
                     });
                 } else {
                     console.error('Prediction Error:', data.error);
@@ -283,21 +283,21 @@ export default function WebQuestionnaire() {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
         }
     };
-    
+
     const handlePrevious = () => {
         if (currentQuestionIndex > 0) {
             setCurrentQuestionIndex(currentQuestionIndex - 1);
         }
     };
-    
+
     const isNextDisabled = () => {
         if (currentQuestion.type === "selection" && selectedOption === null) return true;
         return false;
     };
-    
+
     // Light blue color for buttons and progress bar
     const lightBlue = "#64B5F6";
-    
+
     return (
         <Box
             sx={{
@@ -314,7 +314,7 @@ export default function WebQuestionnaire() {
                 overflow: "visible", // Allow content to overflow for scrolling
             }}
         >
-        
+
             {/* Progress Bar */}
             <Box sx={{ width: "70%", marginBottom: "20px" }}>
                 <LinearProgress
@@ -334,7 +334,7 @@ export default function WebQuestionnaire() {
                     Question {currentQuestionIndex + 1} of {questions.length}
                 </Typography>
             </Box>
-            
+
 
             {/* Questionnaire Box */}
             <Box
@@ -357,7 +357,7 @@ export default function WebQuestionnaire() {
                 <Typography sx={{ color: "white", fontSize: "1.8rem", fontWeight: "500", mb: 4 }}>
                     {currentQuestion.text}
                 </Typography>
-                
+
                 {/* Answer options based on question type */}
                 <Box sx={{ mb: 4 }}>
                     {currentQuestion.type === "selection" && (
@@ -394,7 +394,7 @@ export default function WebQuestionnaire() {
                                 <Typography>{currentQuestion.inputProps?.min || 0}</Typography>
                                 <Typography>{currentQuestion.inputProps?.max || 100}</Typography>
                             </Box>
-                            
+
                             <Box sx={{ width: "100%", display: "flex", alignItems: "center", gap: 2 }}>
                                 <input
                                     type="range"
@@ -413,14 +413,14 @@ export default function WebQuestionnaire() {
                                     }}
                                 />
                             </Box>
-                            
+
                             <Typography sx={{ color: "white", fontSize: "1.5rem", fontWeight: "bold" }}>
                                 {numValue}
                             </Typography>
                         </Box>
                     )}
                 </Box>
-                
+
 
                 {/* Navigation Buttons */}
                 <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
@@ -441,7 +441,7 @@ export default function WebQuestionnaire() {
                         >
                         Previous
                     </Button>
-                    
+
                     <Button
                         onClick={handleNext}
                         disabled={isNextDisabled()}

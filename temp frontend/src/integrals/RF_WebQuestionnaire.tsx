@@ -16,14 +16,48 @@ export default function WebQuestionnaire() {
   const [userInput, setUserInput] = useState({});
 
   const questions = [
-    { id: 1, text: 'What is your age?', type: 'number', min: 15, max: 25, inputProps: { step: '1'} },
-    { id: 2, text: 'What is your Gender?', type: 'selection', subtype: 'button-image', options: [ { label: 'Male', value: 0}, { label: 'Female', value: 1} ] },
-    { id: 3, text: 'What is your Ethnicity?', type: 'selection', options: [ { label: 'Caucasian', value: 0 }, { label: 'African American', value: 1 }, { label: 'Asian', value: 2 }, { label: 'Other', value: 3 } ] },
-    { id: 4, text: "What education did your parents complete?", type: 'selection', options: [ { label: 'None', value: 0 }, { label: 'High School', value: 1 }, { label: 'Some College', value: 2 }, { label: "Bachelor's", value: 3 }, { label: 'Higher', value: 4 } ] },
+    // Update Age question: max changed to 80 (min remains as desired)
+    { id: 1, text: 'What is your age?', type: 'number', min: 15, max: 80, inputProps: { step: '1'} },
+    // Update Gender question: add an Other option
+    { id: 2, text: 'What is your Gender?', type: 'selection', subtype: 'button-image', options: [
+        { label: 'Male', value: 0},
+        { label: 'Female', value: 1},
+        { label: 'Other', value: 'Other' }
+      ]
+    },
+    { id: 3, text: 'What is your Ethnicity?', type: 'selection', options: [
+        { label: 'Caucasian', value: 0 },
+        { label: 'African American', value: 1 },
+        { label: 'Asian', value: 2 },
+        { label: 'Other', value: 3 }
+      ]
+    },
+    { id: 4, text: "What education did your parents complete?", type: 'selection', options: [
+        { label: 'None', value: 0 },
+        { label: 'High School', value: 1 },
+        { label: 'Some College', value: 2 },
+        { label: "Bachelor's", value: 3 },
+        { label: 'Higher', value: 4 }
+      ]
+    },
     { id: 5, text: 'How many hours do you study per week?', type: 'number', min: 0, max: 20, inputProps: { step: '1' } },
     { id: 6, text: 'How many absences did you have during your last semester?', type: 'number', min: 0, max: 30, inputProps: { step: '1' } },
-    { id: 7, text: 'How supportive are parents with your education?', type: 'selection', options: [ { label: 'None', value: 0 }, { label: 'Low', value: 1 }, { label: 'Moderate', value: 2 }, { label: 'High', value: 3 }, { label: 'Very High', value: 4 } ] },
-    { id: 8, text: 'Choose all that apply: Tutoring, Extracurricular, Sports, Music, Volunteering', type: 'multi', options: [ { label: 'Tutoring', value: 'tutoring' }, { label: 'Extracurricular', value: 'extracurricular' }, { label: 'Sports', value: 'sports' }, { label: 'Music', value: 'music' }, { label: 'Volunteering', value: 'volunteering' } ] },
+    { id: 7, text: 'How supportive are parents with your education?', type: 'selection', options: [
+        { label: 'None', value: 0 },
+        { label: 'Low', value: 1 },
+        { label: 'Moderate', value: 2 },
+        { label: 'High', value: 3 },
+        { label: 'Very High', value: 4 }
+      ]
+    },
+    { id: 8, text: 'Choose all that apply: Tutoring, Extracurricular, Sports, Music, Volunteering', type: 'multi', options: [
+        { label: 'Tutoring', value: 'tutoring' },
+        { label: 'Extracurricular', value: 'extracurricular' },
+        { label: 'Sports', value: 'sports' },
+        { label: 'Music', value: 'music' },
+        { label: 'Volunteering', value: 'volunteering' }
+      ]
+    },
     { id: 9, text: 'What is your GPA (Grade point average)?', type: 'number', min: 0.0, max: 4.0, inputProps: { step: '0.01' } }
   ];
 
@@ -77,10 +111,8 @@ export default function WebQuestionnaire() {
   };
 
   const handleNext = () => {
-    // Save current answer and retrieve the updated object
     const updatedAnswers = saveCurrentAnswer();
 
-    // If this is the last question, submit using the newly updatedAnswers
     if (currentQuestionIndex === questions.length - 1) {
       handleSubmit(updatedAnswers);
     } else {
@@ -93,7 +125,8 @@ export default function WebQuestionnaire() {
 
     const formattedInput = {
       Age: finalAnswers[1],
-      Gender: finalAnswers[2],
+      // Map Gender: if the answer is exactly 0 (Male), leave as 0; otherwise, treat as 1 (Female)
+      Gender: finalAnswers[2] === 0 ? 0 : 1,
       Ethnicity: finalAnswers[3],
       ParentalEducation: finalAnswers[4],
       StudyTimeWeekly: finalAnswers[5],
@@ -106,6 +139,8 @@ export default function WebQuestionnaire() {
       Volunteering: selectedPrograms.includes("volunteering"),
       GPA: finalAnswers[9],
     };
+
+    console.log("Sending payload to backend:", formattedInput);
 
     try {
       const response = await fetch("http://localhost:5000/predict_random_forest", {
@@ -134,7 +169,6 @@ export default function WebQuestionnaire() {
     }
   };
 
-  // Save answer before going back
   const handlePrevious = () => {
     saveCurrentAnswer();
     if (currentQuestionIndex > 0) {
@@ -142,7 +176,6 @@ export default function WebQuestionnaire() {
     }
   };
 
-  // Disable Next button until an answer is provided for the current question
   const isNextDisabled = () => {
     if (currentQuestion.type === "selection" && selectedOption === null) return true;
     if (currentQuestion.type === "text" && !textInput.trim()) return true;
@@ -207,7 +240,7 @@ export default function WebQuestionnaire() {
           flexDirection: "column",
           justifyContent: "space-between",
           boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
-          marginBottom: "40px",
+          marginBottom: "40px"
         }}
       >
         <Typography sx={{ color: "white", fontSize: "1.8rem", fontWeight: "500", mb: 4 }}>

@@ -81,7 +81,7 @@ export default function RandomForestDashboard({ userInput, predictionResult }: R
   return (
     <div>
     <div style={{ display: 'flex', justifyContent: 'center' }}>
-      <h1>Letter Grade Questionnaire Dashboard</h1>
+      <h1>Letter Grade Survey Results!</h1>
     </div>
       <RandomForestCharts
         datasetStats={mergedDatasetStats}
