@@ -472,25 +472,8 @@ const RandomForestCharts = ({ datasetStats, userInput, predictionResult }: any) 
         variant="body1"
         sx={{ mt: 4, maxWidth: 700, textAlign: 'center', lineHeight: 1.6, fontWeight: 'bold' }}
       >
-        If you’d like to modify your inputs or try different scenarios, click below to go back and change your data.
+        If you’d like to modify your inputs or try different scenarios, click the Home link at the top right of your screen and change your data.
       </Typography>
-
-      <Button
-        onClick={() => navigate('/')}
-        sx={{
-          backgroundColor: "#64B5F6",
-          color: "#14213D",
-          padding: "10px 20px",
-          borderRadius: "20px",
-          marginTop: "20px",
-          fontWeight: "bold",
-          '&:hover': {
-            backgroundColor: "#90CAF9",
-          }
-        }}
-      >
-        Back to Home
-      </Button>
     </Box>
   );
 };
