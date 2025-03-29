@@ -165,7 +165,7 @@ function ProjectDemo(props: { demo: string }) {
           }}
         />:
         <Typography sx={{ padding: '15px' }}>
-          To see a demo of this product, please contact us at umdappdev@gmail.com
+          To see a demo of this product, please contact us at studentperformancepredictor@gmail.com
         </Typography>
         }
       </Card>

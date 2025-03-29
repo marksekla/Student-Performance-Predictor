@@ -15,23 +15,23 @@ export default function ContactUs(props: {
     let contactLinks: ContactLinks[] = [
         {
             icon: <Instagram />,
-            redirect: 'https://www.instagram.com/appdev_umd/'
+            redirect: 'https://www.instagram.com/studentperformancepredictor/'
         },
         {
             icon: <LinkedIn />,
-            redirect: 'https://www.linkedin.com/company/app-development-club/'
+            redirect: 'https://www.linkedin.com/company/studentperformancepredictor/'
         },
         {
             icon: <GitHub />,
-            redirect: 'https://github.com/appdevumd'
+            redirect: 'https://github.com/studentperformancepredictor'
         },
         {
             icon: <Email />,
-            redirect: 'mailto:umdappdev@gmail.com'
+            redirect: 'mailto:studentperformancepredictor@gmail.com'
         },
         {
             icon: <BiLogoDiscord />,
-            redirect: 'https://discord.com/invite/scSeVbTT7G'
+            redirect: 'https://discord.com/invite/scSeVbTS7P'
         }
     ];
 
