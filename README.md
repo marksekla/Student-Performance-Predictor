@@ -1,21 +1,7 @@
-# Predicting-Student-Performance-COMP-4990
+# Predicting-Student-Performance
 
 
 This project is a web application that predicts student performance using a machine learning model. The application is built with Flask for the backend and React for the frontend.
-
----
-
-## Table of Contents
-
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Project Structure](#project-structure)
-- [Setup Instructions](#setup-instructions)
-  - [Backend Setup](#backend-setup)
-  - [Frontend Setup](#frontend-setup)
-  - [Recreating the Python Virtual Environment](#recreating-the-python-virtual-environment)
-- [Usage](#usage)
-- [License](#license)
 
 ---
 
@@ -36,43 +22,16 @@ This project is a web application that predicts student performance using a mach
 
 ---
 
-## Project Structure
+## Web App Preview
 
-```plaintext
-.
-├── frontend/           # React frontend
-│   ├── components/     # Reusable React components
-│   ├── assets/         # Static files (e.g., images)
-│   ├── styles/         # CSS/SCSS files
-├── backend/            # Flask backend
-│   ├── models/         # Serialized ML models
-│   ├── routes/         # Flask route files
-│   ├── static/         # Static assets
-│   ├── templates/      # HTML templates
-├── data/               # Datasets and sample data
-├── scripts/            # ML training and utility scripts
-├── tests/              # Unit tests for backend/frontend
-├── docs/               # Documentation
-├── requirements.txt    # Python dependencies
-├── .gitignore          # Ignored files and folders
-└── README.md           # Project overview
+<img width="587" alt="Screenshot 2025-03-30 at 2 01 15 AM" src="https://github.com/user-attachments/assets/99078878-8293-4040-b12d-ceae3d09397e" />
 
-```
+---
 
-## Recreating the Python Virtual Environment
+## ML Model Output Preview
 
-To set up the Python virtual environment for the backend, follow these steps:
+<img width="1429" alt="Screenshot 2025-03-30 at 2 03 33 AM" src="https://github.com/user-attachments/assets/5952f086-4328-474c-b5c3-8f4e0c52e15a" />
 
-1. Ensure Python 3.8 or higher is installed by checking your version with `python --version`. Verify that `pip` is installed by running `pip --version`.
+<img width="1427" alt="Screenshot 2025-03-30 at 2 03 58 AM" src="https://github.com/user-attachments/assets/a6ca910c-901b-425f-9d62-ec5c9427ffc4" />
 
-2. Create a virtual environment by running `python -m venv venv`.
-
-3. Activate the virtual environment:
-   - On Linux/Mac: `source venv/bin/activate`
-   - On Windows: `.\venv\Scripts\activate`
-
-4. Install project dependencies with `pip install -r requirements.txt`.
-
-5. Run the backend application using `python backend/app.py`.
-
-6. When you're done, deactivate the virtual environment by running `deactivate`.
+<img width="1428" alt="Screenshot 2025-03-30 at 2 04 26 AM" src="https://github.com/user-attachments/assets/c9696682-9cdc-4cb4-9b0f-27f7f0963b0a" />
