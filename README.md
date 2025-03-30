@@ -5,7 +5,7 @@ This project is a web application that predicts student performance using a mach
 
 ---
 
-## Features
+# Features
 
 - Predict student performance based on various engagement metrics.
 - Interactive frontend for submitting data and viewing results.
@@ -13,7 +13,7 @@ This project is a web application that predicts student performance using a mach
 
 ---
 
-## Technologies Used
+# Technologies Used
 
 - **Frontend**: React, CSS, D3.js
 - **Backend**: Flask, Python
@@ -22,13 +22,13 @@ This project is a web application that predicts student performance using a mach
 
 ---
 
-## Web App Preview
+# Web App Preview
 
 <img width="587" alt="Screenshot 2025-03-30 at 2 01 15 AM" src="https://github.com/user-attachments/assets/99078878-8293-4040-b12d-ceae3d09397e" />
 
 ---
 
-## ML Model Output Preview
+# ML Model Output Preview
 
 <img width="1429" alt="Screenshot 2025-03-30 at 2 03 33 AM" src="https://github.com/user-attachments/assets/5952f086-4328-474c-b5c3-8f4e0c52e15a" />
 
